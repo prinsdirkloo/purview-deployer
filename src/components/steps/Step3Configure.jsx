@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import { useApp } from '../../context/AppContext.jsx'
-import { BtnPrimary, BtnSecondary } from '../ui/Buttons.jsx'
+import StepNav from '../ui/StepNav.jsx'
 import BuiltInPickerModal from '../modals/BuiltInPickerModal.jsx'
 import { POLICIES } from '../../data/policies.js'
 import { MODES } from '../../data/sits.js'
 import { getEffectiveSITsForPolicy } from '../../utils/scriptBuilder.js'
 import s from './Steps.module.css'
 
-const ALL_LOCS = ['Exchange', 'SharePoint', 'OneDrive', 'Teams']
+const ALL_LOCS = ['Exchange','SharePoint','OneDrive','Teams']
 
 function PolicyConfig({ policy }) {
-  const { getPolicyCfg, updatePolicyCfg, policyExtraSITs, removeExtraSITFromPolicy, allSITs, selectedSITIds } = useApp()
+  const {
+    getPolicyCfg, updatePolicyCfg,
+    policyExtraSITs, removeExtraSITFromPolicy,
+    allSITs, selectedSITIds,
+  } = useApp()
   const [pickerOpen, setPickerOpen] = useState(false)
   const cfg = getPolicyCfg(policy.id)
   const includedSITs = getEffectiveSITsForPolicy(policy, allSITs, selectedSITIds, policyExtraSITs)
 
   const update = (field, value) => updatePolicyCfg(policy.id, { [field]: value })
-
   const toggleLoc = (loc) => {
     const locs = cfg.locs || policy.locs
     const next = locs.includes(loc) ? locs.filter(l => l !== loc) : [...locs, loc]
@@ -58,7 +61,8 @@ function PolicyConfig({ policy }) {
             {ALL_LOCS.map(loc => (
               <div
                 key={loc}
-                className={[s.locToggle, (cfg.locs || policy.locs).includes(loc) && s.locOn].filter(Boolean).join(' ')}
+                className={[s.locToggle, (cfg.locs || policy.locs).includes(loc) && s.locOn]
+                  .filter(Boolean).join(' ')}
                 onClick={() => toggleLoc(loc)}
               >
                 <div className={s.locDot} />
@@ -82,13 +86,28 @@ function PolicyConfig({ policy }) {
         <div className={s.thresholdGrid}>
           <div className={s.thresholdCard}>
             <div className={s.thresholdLabel}>Low volume (audit only)</div>
-            <div className={s.miniRow}><label>Min</label><input type="number" min="1" value={cfg.lowMin} onChange={e => update('lowMin', +e.target.value)} /></div>
-            <div className={s.miniRow}><label>Max</label><input type="number" min="1" value={cfg.lowMax} onChange={e => update('lowMax', +e.target.value)} /></div>
+            <div className={s.miniRow}>
+              <label>Min</label>
+              <input type="number" min="1" value={cfg.lowMin}
+                onChange={e => update('lowMin', +e.target.value)} />
+            </div>
+            <div className={s.miniRow}>
+              <label>Max</label>
+              <input type="number" min="1" value={cfg.lowMax}
+                onChange={e => update('lowMax', +e.target.value)} />
+            </div>
           </div>
           <div className={s.thresholdCard}>
             <div className={s.thresholdLabel}>High volume (alert + tip)</div>
-            <div className={s.miniRow}><label>Min</label><input type="number" min="1" value={cfg.highMin} onChange={e => update('highMin', +e.target.value)} /></div>
-            <div className={s.miniRow}><label>Max</label><span className={s.unlimitedLabel}>Unlimited</span></div>
+            <div className={s.miniRow}>
+              <label>Min</label>
+              <input type="number" min="1" value={cfg.highMin}
+                onChange={e => update('highMin', +e.target.value)} />
+            </div>
+            <div className={s.miniRow}>
+              <label>Max</label>
+              <span className={s.unlimitedLabel}>Unlimited</span>
+            </div>
           </div>
         </div>
       </div>
@@ -97,7 +116,8 @@ function PolicyConfig({ policy }) {
       {!policy.endpointOnly && (
         <div className={s.formSection}>
           <label className={s.formLabel}>Policy tip message (high volume rule)</label>
-          <textarea rows={2} value={cfg.tipText} onChange={e => update('tipText', e.target.value)} />
+          <textarea rows={2} value={cfg.tipText}
+            onChange={e => update('tipText', e.target.value)} />
         </div>
       )}
 
@@ -117,12 +137,12 @@ function PolicyConfig({ policy }) {
           {includedSITs.map(sit => {
             const cls = sit.builtIn ? s.pillPurview : sit.isCustom ? s.pillCustom : s.pillBUI
             const icon = sit.builtIn ? '⬡' : sit.isCustom ? '★' : '◆'
-            const canRemove = !!sit.isExtraPurview
             return (
               <span key={sit.id} className={[s.sitPill, cls].join(' ')} title={sit.guid}>
                 {icon} {sit.name.replace(/^South African? /, 'SA ')}
-                {canRemove && (
-                  <button className={s.pillRemove} onClick={() => removeExtraSITFromPolicy(policy.id, sit.id)}>×</button>
+                {sit.isExtraPurview && (
+                  <button className={s.pillRemove}
+                    onClick={() => removeExtraSITFromPolicy(policy.id, sit.id)}>×</button>
                 )}
               </span>
             )
@@ -141,15 +161,14 @@ function PolicyConfig({ policy }) {
 }
 
 export default function Step3Configure() {
-  const { selectedPolicyIds, ensureConfigs, goTo } = useApp()
+  const { selectedPolicyIds, ensureConfigs, goTo, currentStep } = useApp()
   const [activeTab, setActiveTab] = useState(null)
-
   const selectedPolicies = POLICIES.filter(p => selectedPolicyIds.has(p.id))
 
   useEffect(() => {
     ensureConfigs()
     if (selectedPolicies.length > 0 && !activeTab) setActiveTab(selectedPolicies[0].id)
-  }, [])  // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line
 
   function shortName(name) {
     const m = name.match(/\(([^)]+)\)/)
@@ -159,9 +178,17 @@ export default function Step3Configure() {
 
   return (
     <div className={s.step}>
+      {/* Top nav */}
+      <StepNav
+        position="top"
+        currentStep={currentStep}
+        onBack={() => goTo(2)}
+        onNext={() => goTo(4)}
+      />
+
       <div className={s.sectionHead}>
-        <div className={s.eyebrow}>Step 3 of 5</div>
-        <h2>Deployment Configuration</h2>
+        <div className={s.eyebrow}>Deployment Configuration</div>
+        <h2>Configure each policy</h2>
         <p>Customise each policy's name, mode, and thresholds. Default: Low = 1–9 instances, High = 10+ instances.</p>
       </div>
 
@@ -180,15 +207,20 @@ export default function Step3Configure() {
       )}
 
       {selectedPolicies.map(p => (
-        <div key={p.id} style={{ display: activeTab === p.id || selectedPolicies.length === 1 ? 'block' : 'none' }}>
+        <div key={p.id}
+          style={{ display: activeTab === p.id || selectedPolicies.length === 1 ? 'block' : 'none' }}>
           <PolicyConfig policy={p} />
         </div>
       ))}
 
-      <div className={s.nav}>
-        <BtnSecondary onClick={() => goTo(2)}>← Back</BtnSecondary>
-        <BtnPrimary onClick={() => goTo(4)}>Review & Generate →</BtnPrimary>
-      </div>
+      {/* Bottom nav */}
+      <StepNav
+        position="bottom"
+        currentStep={currentStep}
+        onBack={() => goTo(2)}
+        onNext={() => goTo(4)}
+        onNextLabel="Review & Generate →"
+      />
     </div>
   )
 }

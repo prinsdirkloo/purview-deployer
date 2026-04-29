@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react'
 import { useApp } from '../../context/AppContext.jsx'
+import StepNav from '../ui/StepNav.jsx'
 import { BtnSecondary, BtnDownload } from '../ui/Buttons.jsx'
 import { buildXML, buildScript1, buildScript2, downloadText } from '../../utils/scriptBuilder.js'
 import s from './Steps.module.css'
 
-function ScriptBlock({ title, id, content, onDownload, filename }) {
+function ScriptBlock({ title, content, onDownload }) {
   const [copied, setCopied] = useState(false)
 
   const copy = () => {
@@ -34,9 +35,13 @@ function ScriptBlock({ title, id, content, onDownload, filename }) {
 }
 
 export default function Step5Scripts() {
-  const { allSITs, selectedSITIds, selectedPolicyIds, getPolicyCfg, policyExtraSITs, tenantId, adminUPN, goTo, startOver } = useApp()
+  const {
+    allSITs, selectedSITIds, selectedPolicyIds,
+    getPolicyCfg, policyExtraSITs,
+    tenantId, adminUPN,
+    goTo, startOver, currentStep,
+  } = useApp()
 
-  // Build all configs map from context
   const policyConfigsMap = useMemo(() => {
     const map = {}
     selectedPolicyIds.forEach(pid => { map[pid] = getPolicyCfg(pid) })
@@ -45,24 +50,34 @@ export default function Step5Scripts() {
 
   const xml     = useMemo(() => buildXML(allSITs, selectedSITIds, tenantId), [allSITs, selectedSITIds, tenantId])
   const script1 = useMemo(() => buildScript1(allSITs, selectedSITIds, adminUPN), [allSITs, selectedSITIds, adminUPN])
-  const script2 = useMemo(() => buildScript2(allSITs, selectedSITIds, selectedPolicyIds, policyConfigsMap, policyExtraSITs, adminUPN), [allSITs, selectedSITIds, selectedPolicyIds, policyConfigsMap, policyExtraSITs, adminUPN])
+  const script2 = useMemo(() => buildScript2(allSITs, selectedSITIds, selectedPolicyIds, policyConfigsMap, policyExtraSITs, adminUPN),
+    [allSITs, selectedSITIds, selectedPolicyIds, policyConfigsMap, policyExtraSITs, adminUPN])
 
   const fileCount = (xml ? 1 : 0) + (script1 ? 1 : 0) + 1
 
   const dlAll = () => {
-    if (xml)     setTimeout(() => downloadText(xml,     '01_SA_Custom_SITs_-_Rule_Package.xml',            'application/xml'), 0)
-    if (script1) setTimeout(() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1',     'text/plain'),      350)
-                 setTimeout(() => downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain'),  700)
+    if (xml)     setTimeout(() => downloadText(xml,     '01_SA_Custom_SITs_-_Rule_Package.xml', 'application/xml'), 0)
+    if (script1) setTimeout(() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1', 'text/plain'), 350)
+                 setTimeout(() => downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain'), 700)
   }
 
   return (
     <div className={s.step}>
+      {/* Top nav */}
+      <StepNav
+        position="top"
+        currentStep={currentStep}
+        onBack={() => goTo(4)}
+        onNext={startOver}
+        onNextLabel="Start Over"
+      />
+
       <div className={s.sectionHead}>
-        <div className={s.eyebrow}>Step 5 of 5</div>
-        <h2>Deployment Package</h2>
+        <div className={s.eyebrow}>Deployment Package</div>
+        <h2>Your generated scripts</h2>
         <p>
           Download all files{tenantId || adminUPN ? ' — your tenant details are pre-filled' : ''}.
-          Before running, confirm the <code>Publisher id</code> in the XML and <code>$AdminUPN</code> in the scripts.
+          Confirm the <code>Publisher id</code> in the XML and <code>$AdminUPN</code> in the scripts.
         </p>
       </div>
 
@@ -74,10 +89,10 @@ export default function Step5Scripts() {
       {/* Download all banner */}
       <div className={s.dlBanner}>
         <span className={s.dlBannerLabel}>Download all {fileCount} file{fileCount > 1 ? 's' : ''}</span>
-        {xml     && <BtnDownload onClick={() => downloadText(xml,     '01_SA_Custom_SITs_-_Rule_Package.xml',                'application/xml')}>⬇ XML</BtnDownload>}
-        {script1 && <BtnDownload onClick={() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1',         'text/plain')}>⬇ Script 1</BtnDownload>}
+        {xml     && <BtnDownload onClick={() => downloadText(xml, '01_SA_Custom_SITs_-_Rule_Package.xml', 'application/xml')}>⬇ XML</BtnDownload>}
+        {script1 && <BtnDownload onClick={() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1', 'text/plain')}>⬇ Script 1</BtnDownload>}
         <BtnDownload onClick={() => downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain')}>⬇ Script 2</BtnDownload>
-        <BtnDownload onClick={dlAll} style={{ fontWeight: 700 }}>⬇ All files</BtnDownload>
+        <BtnDownload onClick={dlAll} style={{ fontWeight:700 }}>⬇ All files</BtnDownload>
       </div>
 
       {/* XML */}
@@ -86,7 +101,6 @@ export default function Step5Scripts() {
           title="XML — Custom SIT Rule Package"
           content={xml}
           onDownload={() => downloadText(xml, '01_SA_Custom_SITs_-_Rule_Package.xml', 'application/xml')}
-          filename="01_SA_Custom_SITs_-_Rule_Package.xml"
         />
       ) : (
         <div className={s.alertInfo}>
@@ -95,26 +109,25 @@ export default function Step5Scripts() {
         </div>
       )}
 
-      {/* Script 1 */}
       {script1 && (
         <ScriptBlock
           title="Script 1 — Deploy Custom SIT Rule Package"
           content={script1}
           onDownload={() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1', 'text/plain')}
-          filename="01_SA_Custom_SITs_-_Deployment_Commands.ps1"
         />
       )}
 
-      {/* Script 2 */}
       <ScriptBlock
         title="Script 2 — Deploy DLP Policies"
         content={script2}
         onDownload={() => downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain')}
-        filename="02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1"
       />
 
+      {/* Bottom nav */}
       <div className={s.nav}>
-        <BtnSecondary onClick={() => goTo(4)}>← Back</BtnSecondary>
+        <div className={s.navLeft}>
+          <BtnSecondary onClick={() => goTo(4)}>← Back</BtnSecondary>
+        </div>
         <BtnSecondary onClick={startOver}>Start Over</BtnSecondary>
       </div>
     </div>
