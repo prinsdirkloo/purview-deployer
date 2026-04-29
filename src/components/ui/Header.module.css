@@ -1,0 +1,24 @@
+.header {
+  background: var(--black);
+  border-bottom: 2px solid var(--orange);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo { font-family: 'Calibri', sans-serif; font-weight: 900; font-size: 20px; letter-spacing: 1px; color: var(--orange); line-height: 1; }
+.pipe { color: var(--grey); font-weight: 300; }
+.titleWrap { display: flex; flex-direction: column; gap: 1px; }
+.title { font-weight: 600; font-size: 15px; color: #fff; letter-spacing: 0.02em; }
+.sub { font-size: 11px; color: var(--grey); letter-spacing: 0.12em; text-transform: uppercase; }
+.controls { display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 11px; background: rgba(217,134,28,0.15); color: var(--orange); border-radius: 3px; padding: 4px 11px; font-weight: 600; border: 0.5px solid rgba(217,134,28,0.35); letter-spacing: 0.06em; text-transform: uppercase; }
+.hbtn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 5px 12px; border-radius: var(--r-md); background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); cursor: pointer; font-family: inherit; font-weight: 600; letter-spacing: 0.04em; transition: all 0.15s; text-transform: uppercase; }
+.hbtn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+.configBtn { border-color: rgba(217,134,28,0.4); color: var(--orange); }
+.configBtn:hover { background: rgba(217,134,28,0.15); }

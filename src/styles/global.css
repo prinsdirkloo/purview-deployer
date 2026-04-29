@@ -1,0 +1,107 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange: #D9861C;
+  --orange-l: #faeeda;
+  --orange-d: #a8620f;
+  --orange-xl: #fdf5e8;
+  --grey: #535657;
+  --grey-l: #ecedef;
+  --grey-xl: #f5f6f6;
+  --black: #1a1a1a;
+  --bg: #f9f7f4;
+  --bg-s: #f3f1ed;
+  --bg-card: #ffffff;
+  --border: #ddd9d0;
+  --border-m: #c5c0b5;
+  --text: #2a2a2a;
+  --text-s: #535657;
+  --text-m: #8a8680;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --ok: #1a7a4e;
+  --ok-l: #e4f4ec;
+  --ok-t: #0d5c39;
+  --err: #c0392b;
+  --err-l: #fbeaea;
+}
+
+html.dark {
+  --black: #f0f0ec;
+  --bg: #1c1c1a;
+  --bg-s: #252522;
+  --bg-card: #2a2a28;
+  --border: rgba(255,255,255,0.10);
+  --border-m: rgba(255,255,255,0.18);
+  --text: #e8e8e2;
+  --text-s: #a0a09a;
+  --text-m: #6b6b66;
+  --grey-xl: #2e2e2b;
+  --grey-l: #333330;
+  --orange-xl: #2a1e08;
+  --orange-l: #2e1e05;
+  --orange-d: #e8971f;
+  --ok-l: #063320;
+  --ok-t: #5DCAA5;
+  --err-l: #2e0a0a;
+}
+
+body {
+  font-family: 'Calibri', 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  line-height: 1.55;
+}
+
+button { cursor: pointer; font-family: inherit; }
+
+input[type=text],
+input[type=number],
+input[type=password],
+select,
+textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-m);
+  border-radius: var(--r-md);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  height: 38px;
+  transition: border-color 0.15s;
+}
+
+textarea { height: auto; resize: vertical; }
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(217,134,28,0.12);
+}
+
+code {
+  font-family: 'Consolas', 'Menlo', monospace;
+  font-size: 13px;
+  background: var(--bg-s);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-m); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-m); }
+
+/* Spin animation used by loading indicators */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Dark mode overrides */
+html.dark .alert-warn { background: #2a1e00; color: #e8c07a; border-color: #7a5500; }
+html.dark .config-table tr.builtin-row td { background: rgba(217,134,28,0.06); }

@@ -1,0 +1,10 @@
+.primary { background: var(--orange); color: #fff; border: none; border-radius: var(--r-md); padding: 10px 24px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; transition: opacity 0.15s; cursor: pointer; font-family: inherit; }
+.primary:hover { opacity: 0.88; }
+.primary:disabled { opacity: 0.3; cursor: default; }
+.secondary { background: var(--bg-card); color: var(--text-s); border: 1px solid var(--border-m); border-radius: var(--r-md); padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.secondary:hover { background: var(--bg-s); }
+.success { background: var(--ok); color: #fff; border: none; border-radius: var(--r-md); padding: 10px 24px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.success:hover { opacity: 0.88; }
+.success:disabled { opacity: 0.3; cursor: default; }
+.download { background: var(--orange-xl); color: var(--orange-d); border: 1px solid var(--orange); border-radius: var(--r-md); padding: 6px 13px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.download:hover { background: var(--orange); color: #fff; }
