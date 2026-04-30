@@ -72,6 +72,7 @@ function saveApiKey(key) {
 
 export default function SITFormModal({ open, onClose, onSave, editSIT }) {
   const [name,     setName]     = useState('')
+  const [desc,     setDesc]     = useState('')
   const [tag,      setTag]      = useState('pii')
   const [group,    setGroup]    = useState('pii')
   const [regex,    setRegex]    = useState('')
@@ -93,6 +94,7 @@ export default function SITFormModal({ open, onClose, onSave, editSIT }) {
     if (!open) return
     if (editSIT) {
       setName(editSIT.name || '')
+      setDesc(editSIT.desc || '')
       setTag(editSIT.tag || 'pii')
       setGroup(editSIT.group || 'pii')
       setRegex(editSIT.regex || '')
@@ -101,7 +103,7 @@ export default function SITFormModal({ open, onClose, onSave, editSIT }) {
       setKeywords(editSIT.keywords || [])
       setAiStatus('')
     } else {
-      setName(''); setTag('pii'); setGroup('pii')
+      setName(''); setDesc(''); setTag('pii'); setGroup('pii')
       setRegex(''); setProx(300); setGuid('')
       setKeywords([]); setAiStatus('')
     }
@@ -243,6 +245,14 @@ export default function SITFormModal({ open, onClose, onSave, editSIT }) {
       setRegex(parsed.regex)
       if (parsed.keywords?.length) setKeywords(parsed.keywords)
 
+      // Build a concise description for the SIT desc field
+      const descParts = [
+        parsed.format_description,
+        parsed.authority && `Issued by ${parsed.authority}${parsed.abbreviation ? ' (' + parsed.abbreviation + ')' : ''}`,
+        parsed.notes,
+      ].filter(Boolean)
+      if (descParts.length > 0) setDesc(descParts.join('. ').replace(/\.\./g, '.'))
+
       const confEmoji = { high: '✓', medium: '~', low: '⚠' }[parsed.confidence] || '✓'
       const parts = [
         `${confEmoji} ${parsed.confidence === 'high' ? 'High confidence' : parsed.confidence === 'medium' ? 'Medium confidence — verify' : 'Low confidence — manual review needed'}`,
@@ -286,10 +296,11 @@ export default function SITFormModal({ open, onClose, onSave, editSIT }) {
     )
     const resolvedGuid = guid.trim() || editSIT?.guid || generateGUID()
     const isBuiltInEdit = editSIT && !editSIT.isCustom
+    const resolvedDesc = desc.trim() || (isBuiltInEdit ? (editSIT.desc || name.trim()) : `Custom SIT: ${name.trim()}`)
     onSave({
       id,
       name:    name.trim(),
-      desc:    isBuiltInEdit ? (editSIT.desc || name.trim()) : `Custom SIT: ${name.trim()}`,
+      desc:    resolvedDesc,
       tag, group,
       builtIn: isBuiltInEdit ? (editSIT.builtIn || false) : false,
       isCustom: isBuiltInEdit ? false : true,
@@ -406,6 +417,23 @@ export default function SITFormModal({ open, onClose, onSave, editSIT }) {
             </button>
           </div>
         )}
+      </div>
+
+      {/* Description */}
+      <div className={s.formGroup}>
+        <label className={s.label}>
+          Description
+          <span style={{ fontWeight:400, textTransform:'none', letterSpacing:0,
+            fontSize:11, color:'var(--text-m)', marginLeft:6 }}>
+            (shown in Step 1 SIT cards and Config table)
+          </span>
+        </label>
+        <input
+          type="text"
+          value={desc}
+          onChange={e => setDesc(e.target.value)}
+          placeholder="e.g. 11-digit KRA PIN issued by Kenya Revenue Authority"
+        />
       </div>
 
       {/* Tag + Group */}
