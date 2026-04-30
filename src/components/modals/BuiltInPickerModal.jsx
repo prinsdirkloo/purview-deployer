@@ -25,7 +25,7 @@ export default function BuiltInPickerModal({ open, onClose, policyId, includedGu
       isExtraPurview: true,
       guid: catalogueSIT.guid,
       conf: catalogueSIT.conf,
-      regex: '', keywords: [], proximity: 300,
+      regex: '', keywords: [], proximity: 50,
     })
   }
 

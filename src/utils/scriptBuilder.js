@@ -1,5 +1,6 @@
 import { SIT_XML } from '../data/sitXml.js'
 import { POLICIES } from '../data/policies.js'
+import { SILENT_PURVIEW_SITS } from '../data/sits.js'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -27,22 +28,39 @@ export function getEffectiveSitIds(policy, allSITs) {
   return [...core]
 }
 
+/**
+ * Returns the full list of SITs that should be included in a policy's
+ * AdvancedRule JSON for Script 2. This includes:
+ *  1. Library SITs that are in the policy's sitIds AND have been selected in Step 1
+ *  2. User-added custom SITs from the same group that are selected
+ *  3. Extra built-in SITs added via the picker for this policy
+ *  4. Silent built-in Purview SITs (credit_card, sa_id, sa_addresses) that the
+ *     policy references — these are always included regardless of Step 1 selections
+ *     because they live in Purview natively and don't need to be deployed.
+ */
 export function getEffectiveSITsForPolicy(policy, allSITs, selectedSITIds, policyExtraSITs = {}) {
+  // Library SITs selected in Step 1
   const coreSITs = allSITs.filter(s => policy.sitIds.includes(s.id) && selectedSITIds.has(s.id))
+  // User-added custom SITs from same group, selected in Step 1
   const customGroupSITs = allSITs.filter(s => s.isCustom && s.group === policy.group && selectedSITIds.has(s.id))
+  // Extra built-in SITs added via the picker
   const extras = policyExtraSITs[policy.id] || []
+  // Silent Purview built-ins that the policy references — always included
+  const silentForPolicy = SILENT_PURVIEW_SITS.filter(s => policy.sitIds.includes(s.id))
+
   const seen = new Set()
-  return [...coreSITs, ...customGroupSITs, ...extras].filter(s => {
+  return [...coreSITs, ...customGroupSITs, ...extras, ...silentForPolicy].filter(s => {
     if (seen.has(s.guid)) return false
     seen.add(s.guid); return true
   })
 }
 
+
 // ── XML builder ──────────────────────────────────────────────────────────────
 
 function buildCustomEntityBlock(s) {
   const rid = sanitizeId(s.id)
-  const prox = s.proximity || 300
+  const prox = s.proximity || 50
   const kwMatch = s.keywords?.length ? `\n        <Match idRef="Keywords_${rid}" />` : ''
   return `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="${s.guid}"

@@ -293,3 +293,25 @@ html.light .groupHeader { background: rgba(217,134,28,0.06) !important; }
 html.light .rowType { background: #f3f4f6; color: #6b7280; border-color: rgba(0,0,0,0.1); }
 html.light .tdName { color: #1a1a1a; }
 html.light .pickerGroupHeader { background: rgba(217,134,28,0.04); }
+
+/* ── API Key panel ── */
+.apiKeyPanel {
+  background: rgba(217,134,28,0.06);
+  border: 1px solid rgba(217,134,28,0.3);
+  border-left: 3px solid var(--orange);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  margin-bottom: 1.25rem;
+}
+.apiKeyPanelTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--orange-d);
+  margin-bottom: 6px;
+}
+.apiKeyPanelDesc {
+  font-size: 12px;
+  color: var(--text-s);
+  line-height: 1.6;
+  margin: 0;
+}

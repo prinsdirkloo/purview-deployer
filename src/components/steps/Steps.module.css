@@ -423,3 +423,24 @@ html.light .alertInfo { background: #fdf5e8; color: #a8620f; border-color: #e8c2
   color: var(--text-m);
   text-transform: uppercase;
 }
+
+/* ── Add from library button (Step 1) ── */
+.addFromLibraryBtn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border: 1px solid rgba(217,134,28,0.4);
+  border-radius: 20px;
+  background: rgba(217,134,28,0.08);
+  color: var(--orange-d);
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.addFromLibraryBtn:hover {
+  background: var(--orange);
+  color: #fff;
+  border-color: var(--orange);
+  box-shadow: 0 2px 10px rgba(217,134,28,0.3);
+}

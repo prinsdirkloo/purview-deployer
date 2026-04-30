@@ -8,7 +8,7 @@
 export const SIT_XML = {
   sa_company_reg: {
     entityBlock: `    <Entity id="5779832b-b170-494f-b18d-05dc50f078b0"
-            patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+            patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
       <Pattern confidenceLevel="75">
         <IdMatch idRef="Regex_SACompanyRegistrationNumber" />
         <Match idRef="Keywords_SACompanyRegistrationNumber" />
@@ -29,7 +29,7 @@ export const SIT_XML = {
   },
   sa_mobile: {
     entityBlock: `    <Entity id="537c36cf-a3a9-4719-a4cd-183894bea0d9"
-            patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+            patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
       <Pattern confidenceLevel="75">
         <IdMatch idRef="Regex_SAMobileNumber" />
         <Match idRef="Keywords_SAMobileNumber" />
@@ -51,7 +51,7 @@ export const SIT_XML = {
   sa_bank: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="a6b97e82-7f65-4c7e-82f6-7c850e815386"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SABankAccountNumber" />
           <Match idRef="Keywords_SABankName" />
@@ -90,7 +90,7 @@ export const SIT_XML = {
   sa_company_tax: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="bd938c71-5bed-4156-91ec-a8cb68fd1525"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SACompanyIncomeTaxNumber" />
           <Match idRef="Keywords_SACompanyIncomeTaxNumber" />
@@ -113,7 +113,7 @@ export const SIT_XML = {
   sa_dob: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="07dee987-6d0f-4fdb-ab08-cff8bfbc31d8"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SADateOfBirth" />
           <Match idRef="Keywords_SADateOfBirth" />
@@ -134,7 +134,7 @@ export const SIT_XML = {
   sa_paye: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="5f320260-18be-4c32-bfb0-261362f1b792"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SAPAYERegistrationNumber" />
           <Match idRef="Keywords_SAPAYERegistrationNumber" />
@@ -156,7 +156,7 @@ export const SIT_XML = {
   sa_personal_tax: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="6a3a63d6-a69f-4189-8648-ae4c451f08b7"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SAPersonalIncomeTaxNumber" />
           <Match idRef="Keywords_SAPersonalIncomeTaxNumber" />
@@ -177,7 +177,7 @@ export const SIT_XML = {
   sa_uif: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="e11a1e65-2ef2-4698-b360-6f9ebfc9823f"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SAUIFNumber" />
           <Match idRef="Keywords_SAUIFNumber" />
@@ -199,7 +199,7 @@ export const SIT_XML = {
   sa_vat: {
     entityBlock: `    <Version minEngineVersion="15.01.0998.000">
       <Entity id="44604fab-4b4c-4e7a-a301-5888163eb630"
-              patternsProximity="300" recommendedConfidence="75" relaxProximity="false">
+              patternsProximity="50" recommendedConfidence="75" relaxProximity="false">
         <Pattern confidenceLevel="75">
           <IdMatch idRef="Regex_SAVATRegistrationNumber" />
           <Match idRef="Keywords_SAVATRegistrationNumber" />
