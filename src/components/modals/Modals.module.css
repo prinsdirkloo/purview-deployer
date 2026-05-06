@@ -315,3 +315,105 @@ html.light .pickerGroupHeader { background: rgba(217,134,28,0.04); }
   line-height: 1.6;
   margin: 0;
 }
+
+/* ── GitHub Sync Panel ── */
+.ghPanel {
+  background: var(--bg-s);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.ghPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ghPanelLeft { display: flex; align-items: center; gap: 8px; }
+.ghPanelTitle { font-size: 13px; font-weight: 700; color: var(--text); }
+.ghBadge { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; }
+.ghSettingsToggle {
+  font-size: 12px;
+  padding: 5px 11px;
+  border: 1px solid var(--border-m);
+  border-radius: var(--r-md);
+  background: var(--bg-card);
+  color: var(--text-s);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.ghSettingsToggle:hover { background: var(--bg-card-l); color: var(--text); }
+.ghStatusLine {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  font-size: 12px;
+  min-height: 32px;
+}
+.ghStatusIcon { font-size: 13px; flex-shrink: 0; display: flex; align-items: center; }
+.ghSpinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(217,134,28,0.3);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+.ghSettingsForm {
+  padding: 14px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.ghSettingsDesc {
+  font-size: 12px;
+  color: var(--text-s);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.ghFormGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.ghLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-s);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.ghTokenHint { font-size: 11px; color: var(--text-m); margin-top: 5px; line-height: 1.5; }
+.ghTestResult { font-size: 13px; font-weight: 600; padding: 6px 0; margin-bottom: 8px; }
+.ghFormActions { display: flex; gap: 8px; flex-wrap: wrap; }
+.ghTestBtn {
+  font-size: 12px; padding: 7px 14px;
+  border: 1px solid var(--border-m); border-radius: var(--r-md);
+  background: var(--bg-s); color: var(--text-s);
+  cursor: pointer; font-family: inherit; font-weight: 600;
+  transition: all 0.15s;
+}
+.ghTestBtn:hover:not(:disabled) { background: var(--bg-card-l); color: var(--text); }
+.ghTestBtn:disabled { opacity: 0.4; cursor: default; }
+.ghSaveBtn {
+  font-size: 12px; padding: 7px 16px;
+  border: none; border-radius: var(--r-md);
+  background: var(--orange); color: #fff;
+  cursor: pointer; font-family: inherit; font-weight: 700;
+  letter-spacing: 0.04em; transition: opacity 0.15s;
+  box-shadow: 0 2px 8px rgba(217,134,28,0.3);
+}
+.ghSaveBtn:hover { opacity: 0.88; }
+.ghCancelBtn {
+  font-size: 12px; padding: 7px 14px;
+  border: 1px solid var(--border-m); border-radius: var(--r-md);
+  background: transparent; color: var(--text-s);
+  cursor: pointer; font-family: inherit; font-weight: 600;
+  transition: all 0.15s;
+}
+.ghCancelBtn:hover { background: var(--bg-s); }

@@ -11,7 +11,7 @@ import Step4Review from './components/steps/Step4Review.jsx'
 import Step5Scripts from './components/steps/Step5Scripts.jsx'
 import ConfigModal from './components/modals/ConfigModal.jsx'
 
-function AppInner({ statusMsg, exportConfig, importConfig }) {
+function AppInner({ statusMsg, exportConfig, importConfig, ghSettings, updateGhSettings, ghStatus, ghMsg }) {
   const { currentStep, configModalOpen, setConfigModalOpen } = useApp()
   const { isDark, toggleTheme } = useTheme()
 
@@ -19,30 +19,40 @@ function AppInner({ statusMsg, exportConfig, importConfig }) {
     <>
       <Header isDark={isDark} toggleTheme={toggleTheme} />
       <Stepper />
-
       {currentStep === 1 && <Step1SITs />}
       {currentStep === 2 && <Step2Policies />}
       {currentStep === 3 && <Step3Configure />}
       {currentStep === 4 && <Step4Review />}
       {currentStep === 5 && <Step5Scripts />}
-
       <ConfigModal
         open={configModalOpen}
         onClose={() => setConfigModalOpen(false)}
         statusMsg={statusMsg}
         exportConfig={exportConfig}
         importConfig={importConfig}
+        ghSettings={ghSettings}
+        updateGhSettings={updateGhSettings}
+        ghStatus={ghStatus}
+        ghMsg={ghMsg}
       />
     </>
   )
 }
 
 export default function App() {
-  const { allSITs, saveSITs, statusMsg, exportConfig, importConfig } = useConfig()
-
+  const { allSITs, saveSITs, statusMsg, exportConfig, importConfig,
+          ghSettings, updateGhSettings, ghStatus, ghMsg } = useConfig()
   return (
     <AppProvider allSITs={allSITs} saveSITs={saveSITs}>
-      <AppInner statusMsg={statusMsg} exportConfig={exportConfig} importConfig={importConfig} />
+      <AppInner
+        statusMsg={statusMsg}
+        exportConfig={exportConfig}
+        importConfig={importConfig}
+        ghSettings={ghSettings}
+        updateGhSettings={updateGhSettings}
+        ghStatus={ghStatus}
+        ghMsg={ghMsg}
+      />
     </AppProvider>
   )
 }
