@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-05-12T12:28:04.759Z",
+  "savedAt": "2026-05-12T12:29:14.587Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -181,33 +181,6 @@
       ],
       "proximity": 50,
       "isCustom": false
-    },
-    {
-      "id": "custom_south_african_police_case_nu_mp2lwemu",
-      "name": "South African Police Case Number",
-      "desc": "South African Police Case Numbers typically follow the format XX######/## where XX is a two-letter code representing the police station/province, followed by 6 digits for the case sequence number and 2 digits for the year. Alternative formats include XX######## (8 digits) for internal reference systems. Issued by South African Police Service (SAPS). South African Police case numbers are used for criminal investigations and case management. The two-letter prefix identifies the originating police station or province. Format may vary slightly between different police provinces and legacy systems. The format XX######/## is the most common official format used in court documents and official correspondence.",
-      "tag": "pii",
-      "group": "pii",
-      "builtIn": false,
-      "isCustom": true,
-      "guid": "5f438d95-4c2e-4ef0-a35c-e7d7fc025023",
-      "conf": "Medium",
-      "regex": "\\b[A-Z]{2}\\d{6}/\\d{2}\\b|\\b[A-Z]{2}\\d{8}\\b|\\bCase\\s+(?:No\\.?|Number)\\s+[A-Z]{2}\\d{6}/\\d{2}\\b|\\b[A-Z]{2}/\\d{6}/\\d{2}\\b",
-      "keywords": [
-        "South African Police Service",
-        "SAPS",
-        "Police Case Number",
-        "Case Number",
-        "Case No",
-        "Saak Nommer",
-        "Police File Number",
-        "File Reference",
-        "Case Reference",
-        "Docket Number",
-        "Docket Reference",
-        "Police Docket"
-      ],
-      "proximity": 50
     }
   ]
 }
