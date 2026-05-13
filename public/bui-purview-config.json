@@ -99,20 +99,14 @@
       "conf": "Medium",
       "group": "pii",
       "regex": "\\b((?:19\\d{2}|20\\d{2})[-/.](?:0[1-9]|1[0-2])[-/.](?:0[1-9]|[12][0-9]|3[01])|(?:0[1-9]|[12][0-9]|3[01])[-/.](?:0[1-9]|1[0-2])[-/.](?:19\\d{2}|20\\d{2})|(?:0[1-9]|1[0-2])[-/.](?:0[1-9]|[12][0-9]|3[01])[-/.](?:19\\d{2}|20\\d{2}))\b",
-      "keywords": [
-        "dob",
-        "date of birth",
-        "birth date",
-        "born",
-        "yob"
-      ],
+      "keywords": ["dob", "date of birth", "birth date", "born", "yob"],
       "proximity": 50,
       "isCustom": false
     },
     {
       "id": "sa_paye",
       "name": "South African PAYE Number",
-      "desc": "SARS PAYE registration starting with 7 (10 digits)",
+      "desc": "SARS PAYE registration starting with 7 (10 digits long)",
       "tag": "fin",
       "builtIn": false,
       "guid": "5f320260-18be-4c32-bfb0-261362f1b792",
@@ -174,11 +168,7 @@
       "conf": "Medium",
       "group": "financial",
       "regex": "\\b4\\d{9}\\b",
-      "keywords": [
-        "VAT Number",
-        "VAT Registration Number",
-        "Value Added Tax"
-      ],
+      "keywords": ["VAT Number", "VAT Registration Number", "Value Added Tax"],
       "proximity": 50,
       "isCustom": false
     }
