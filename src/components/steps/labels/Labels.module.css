@@ -1,0 +1,263 @@
+/* ── Labels track CSS ──────────────────────────────────────────────────────── */
+
+/* ── Label card ── */
+.labelCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.15s;
+}
+.labelCard:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+
+.labelCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--bg-s);
+  border-bottom: 1px solid var(--border);
+}
+.labelCardHeader:hover { background: var(--bg-card-l); }
+
+.labelSwatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.labelCardName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+.expandIcon {
+  font-size: 11px;
+  color: var(--text-m);
+}
+
+.labelCardBody {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Field groups ── */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-s);
+}
+
+.fieldRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.fieldRow > .fieldGroup { flex: 1; min-width: 120px; }
+
+/* ── Colour picker row ── */
+.colorRow { display: flex; gap: 8px; align-items: center; }
+
+.colorPicker {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 2px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.colorHex {
+  font-family: 'Consolas', monospace;
+  font-size: 13px;
+  flex: 1;
+  min-width: 80px;
+}
+
+/* ── Markings ── */
+.markingsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.markingSection {
+  background: var(--bg-s);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.markingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.markingTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-s);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.markingFields {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Toggle switch ── */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.toggle input[type="checkbox"] { display: none; }
+
+.toggleTrack {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--border-m);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle input:checked + .toggleTrack { background: var(--orange); }
+
+.toggleThumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle input:checked + .toggleTrack .toggleThumb { transform: translateX(16px); }
+
+.toggleLabel { font-size: 12px; color: var(--text-s); }
+
+/* ── Track switcher ── */
+.trackSwitcher {
+  display: flex;
+  gap: 0;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin: 0 auto 0 0;
+}
+
+.trackBtn {
+  padding: 9px 22px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  background: var(--bg-s);
+  color: var(--text-m);
+  transition: all 0.15s;
+  text-transform: uppercase;
+  border-right: 1px solid var(--border);
+}
+.trackBtn:last-child { border-right: none; }
+.trackBtn:hover { background: var(--bg-card-l); color: var(--text); }
+.trackBtnActive {
+  background: var(--orange) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+}
+
+/* ── Policy-absent notice ── */
+.policyNotice {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--orange);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  margin-bottom: 1.5rem;
+}
+.policyNoticeTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--orange-d);
+  margin-bottom: 6px;
+}
+.policyNoticeBody {
+  font-size: 13px;
+  color: var(--text-s);
+  line-height: 1.65;
+}
+.policyNoticeBody a { color: var(--orange); }
+
+/* ── Step L2 settings ── */
+.settingsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 640px) { .settingsGrid { grid-template-columns: 1fr; } }
+
+/* ── Script review table ── */
+.reviewTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 1.5rem;
+}
+.reviewTable th {
+  background: var(--bg-s);
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-m);
+  border-bottom: 1px solid var(--border);
+}
+.reviewTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-s);
+  vertical-align: top;
+}
+.reviewTable tr:last-child td { border-bottom: none; }
+
+.tick { color: #4ade80; }
+.cross { color: var(--text-m); }
+
+/* Light mode */
+html.light .labelCard { background: #fafafa; }
+html.light .labelCardHeader { background: #f0f0f0; }
+html.light .markingSection { background: #f5f5f5; }
+html.light .trackBtn { background: #f0f0f0; }
+html.light .policyNotice { background: #fffbf5; }

@@ -1,13 +1,14 @@
 import React from 'react'
 import { useApp } from '../../context/AppContext.jsx'
+import ls from '../steps/labels/Labels.module.css'
 import s from './Header.module.css'
 
-export default function Header({ isDark, toggleTheme }) {
+export default function Header({ isDark, toggleTheme, activeTrack, setActiveTrack }) {
   const { setConfigModalOpen } = useApp()
 
   return (
     <header className={s.header}>
-      {/* BUI logo — exact markup from BUI Brandline */}
+      {/* BUI logo */}
       <div className={s.brand}>
         <div className={s.logoMark}>
           {['B','U','I'].map((l, i) => (
@@ -29,8 +30,24 @@ export default function Header({ isDark, toggleTheme }) {
         </div>
       </div>
 
-      <div className={s.controls}>
-        <span className={s.badge}>Microsoft Purview</span>
+      {/* Track switcher — grid column 2, naturally centred */}
+      <div className={ls.trackSwitcher}>
+        <button
+          className={[ls.trackBtn, activeTrack === 'dlp' && ls.trackBtnActive].filter(Boolean).join(' ')}
+          onClick={() => setActiveTrack('dlp')}
+        >
+          DLP Deployment
+        </button>
+        <button
+          className={[ls.trackBtn, activeTrack === 'labels' && ls.trackBtnActive].filter(Boolean).join(' ')}
+          onClick={() => setActiveTrack('labels')}
+        >
+          Sensitivity Labels
+        </button>
+      </div>
+
+      {/* Controls — grid column 3, aligned right */}
+      <div className={s.controls} style={{ justifySelf: 'end' }}>
         <button
           className={`${s.hbtn} ${s.configBtn}`}
           onClick={() => setConfigModalOpen(true)}
