@@ -14,13 +14,24 @@ export const BUI_CUSTOM_IDS = new Set([
 
 // ── Local helpers ─────────────────────────────────────────────────────────────
 
+// JSON is always the authoritative source for field values.
+// DEFAULT_SITS only provides structural defaults for fields missing from JSON.
+// This means if regex/keywords are updated in the JSON, they always win.
 function mergeConfigSITs(sits) {
+  // For each default SIT, take the JSON version if present (JSON fields win)
   const merged = DEFAULT_SITS.map(def => {
-    const override = sits.find(s => s.id === def.id)
-    return override ? { ...def, ...override } : def
+    const fromJson = sits.find(s => s.id === def.id)
+    // Spread order: def first (structural fallback), then fromJson (JSON always wins)
+    return fromJson ? { ...def, ...fromJson } : { ...def }
   })
+  // Append any user-added custom SITs from JSON not present in DEFAULT_SITS
   const customOnly = sits.filter(s => !DEFAULT_SITS.find(d => d.id === s.id))
   return [...merged, ...customOnly]
+}
+
+// Build SITs for localStorage — strips nothing, stores full objects
+function buildForStorage(sits) {
+  return sits
 }
 
 function loadFromLocalStorage() {
@@ -162,34 +173,63 @@ export function useConfig() {
 
   const loadedFromFile = useRef(false)
 
-  // On mount: load from the hosted JSON first, fall back to localStorage
+  // Fetch bui-purview-config.json and update state + localStorage
+  // cacheBust: add a timestamp param to bypass any CDN/browser cache
+  const fetchAndApplyJson = useCallback(async (cacheBust = false) => {
+    const url = cacheBust
+      ? `./bui-purview-config.json?t=${Date.now()}`
+      : './bui-purview-config.json'
+    const r = await fetch(url, { cache: 'no-cache' })
+    if (!r.ok) throw new Error(`HTTP ${r.status}`)
+    const parsed = await r.json()
+    if (!parsed.sits || !Array.isArray(parsed.sits)) throw new Error('Invalid format — missing sits array')
+    const merged = mergeConfigSITs(parsed.sits)
+    setAllSITs(merged)
+    // Write the JSON-sourced data back to localStorage so it's available offline
+    persistToLocalStorage(merged)
+    loadedFromFile.current = true
+    return merged
+  }, [])
+
+  // On mount: always try to load from the hosted JSON — it is authoritative
+  // for regex, keywords, and proximity. localStorage is only the fallback.
   useEffect(() => {
     let cancelled = false
     async function init() {
       try {
-        const r = await fetch('./bui-purview-config.json', { cache: 'no-cache' })
-        if (!r.ok) throw new Error('not found')
-        const parsed = await r.json()
-        if (!parsed.sits || !Array.isArray(parsed.sits)) throw new Error('invalid format')
+        const merged = await fetchAndApplyJson(false)
         if (cancelled) return
-        const merged = mergeConfigSITs(parsed.sits)
-        setAllSITs(merged)
-        persistToLocalStorage(merged)
-        loadedFromFile.current = true
         const customCount = merged.filter(s => s.isCustom).length
         setStatusMsg(`✓ Loaded from repo (${customCount} custom SIT${customCount !== 1 ? 's' : ''})`)
       } catch (_) {
         if (cancelled) return
+        // JSON unreachable — fall back to localStorage (may have stale regex)
         const current = loadFromLocalStorage()
         const customCount = current.filter(s => s.isCustom).length
         setStatusMsg(customCount > 0
-          ? `Loaded from localStorage (${customCount} custom SIT${customCount !== 1 ? 's' : ''})`
+          ? `⚠ Loaded from localStorage — open Config and click Reload to sync latest changes`
           : 'Using built-in library — add custom SITs via ⚙ Config')
       }
     }
     init()
     return () => { cancelled = true }
-  }, [])
+  }, [fetchAndApplyJson])
+
+  // Manual reload from repo — bypasses all caches
+  const reloadFromRepo = useCallback(async () => {
+    setStatusMsg('Reloading from repo…')
+    try {
+      const merged = await fetchAndApplyJson(true)   // cache-busting timestamp
+      const customCount = merged.filter(s => s.isCustom).length
+      const msg = `✓ Reloaded from repo — ${new Date().toLocaleTimeString()} (${customCount} custom SIT${customCount !== 1 ? 's' : ''})`
+      setStatusMsg(msg)
+      return { ok: true, message: msg }
+    } catch (e) {
+      const msg = `⚠ Reload failed: ${e.message}`
+      setStatusMsg(msg)
+      return { ok: false, message: msg }
+    }
+  }, [fetchAndApplyJson])
 
   // Update GitHub settings and persist
   const updateGhSettings = useCallback((newSettings) => {
@@ -262,5 +302,6 @@ export function useConfig() {
     allSITs, saveSITs, statusMsg,
     exportConfig, importConfig,
     ghSettings, updateGhSettings, ghStatus, ghMsg,
+    reloadFromRepo,
   }
 }

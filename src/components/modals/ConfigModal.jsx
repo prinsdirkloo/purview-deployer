@@ -6,7 +6,7 @@ import { ghTestConnection } from '../../hooks/useConfig.js'
 import s from './Modals.module.css'
 
 // ── GitHub Settings Panel ─────────────────────────────────────────────────────
-function GitHubSyncPanel({ ghSettings, updateGhSettings, ghStatus, ghMsg, statusMsg }) {
+function GitHubSyncPanel({ ghSettings, updateGhSettings, ghStatus, ghMsg, statusMsg, onReload }) {
   const [expanded,    setExpanded]    = useState(false)
   const [draft,       setDraft]       = useState(ghSettings)
   const [testResult,  setTestResult]  = useState(null)
@@ -71,13 +71,28 @@ function GitHubSyncPanel({ ghSettings, updateGhSettings, ghStatus, ghMsg, status
         </button>
       </div>
 
-      {/* Status line */}
-      <div className={s.ghStatusLine} style={{ color: statusColor }}>
-        <span className={s.ghStatusIcon}>{ghStatus === 'syncing'
-          ? <span className={s.ghSpinner} />
-          : statusIcon}
-        </span>
-        <span>{statusMsg}</span>
+      {/* Status line + reload button */}
+      <div className={s.ghStatusLine} style={{ color: statusColor, justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+          <span className={s.ghStatusIcon}>{ghStatus === 'syncing'
+            ? <span className={s.ghSpinner} />
+            : statusIcon}
+          </span>
+          <span>{statusMsg}</span>
+        </div>
+        <button
+          style={{
+            fontSize: 11, padding: '4px 12px', border: '1px solid var(--border-m)',
+            borderRadius: 'var(--r-md)', background: 'var(--bg-card)',
+            color: 'var(--text-s)', cursor: 'pointer', fontFamily: 'inherit',
+            fontWeight: 600, letterSpacing: '0.04em', transition: 'all 0.15s',
+            flexShrink: 0,
+          }}
+          onClick={onReload}
+          title="Fetch latest bui-purview-config.json from the hosted app — updates regex, keywords and proximity from the server"
+        >
+          ↺ Reload from repo
+        </button>
       </div>
 
       {/* Expandable settings form */}
@@ -177,6 +192,7 @@ function GitHubSyncPanel({ ghSettings, updateGhSettings, ghStatus, ghMsg, status
 export default function ConfigModal({
   open, onClose, statusMsg, exportConfig, importConfig,
   ghSettings, updateGhSettings, ghStatus, ghMsg,
+  reloadFromRepo,
 }) {
   const { allSITs, saveSITs } = useApp()
   const [editingSIT, setEditingSIT] = useState(null)
@@ -273,6 +289,7 @@ export default function ConfigModal({
           ghStatus={ghStatus}
           ghMsg={ghMsg}
           statusMsg={statusMsg}
+          onReload={reloadFromRepo}
         />
 
         {/* Toolbar */}

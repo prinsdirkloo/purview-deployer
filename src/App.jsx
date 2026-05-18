@@ -129,7 +129,7 @@ function LabelsTrack({ labels, setLabels, adminUPN }) {
 }
 
 // ── App inner — handles track switching ──────────────────────────────────────
-function AppInner({ statusMsg, exportConfig, importConfig, ghSettings, updateGhSettings, ghStatus, ghMsg }) {
+function AppInner({ statusMsg, exportConfig, importConfig, ghSettings, updateGhSettings, ghStatus, ghMsg, reloadFromRepo }) {
   const { configModalOpen, setConfigModalOpen, adminUPN } = useApp()
   const { isDark, toggleTheme } = useTheme()
 
@@ -175,6 +175,7 @@ function AppInner({ statusMsg, exportConfig, importConfig, ghSettings, updateGhS
         updateGhSettings={updateGhSettings}
         ghStatus={ghStatus}
         ghMsg={ghMsg}
+        reloadFromRepo={reloadFromRepo}
       />
     </>
   )
@@ -182,7 +183,8 @@ function AppInner({ statusMsg, exportConfig, importConfig, ghSettings, updateGhS
 
 export default function App() {
   const { allSITs, saveSITs, statusMsg, exportConfig, importConfig,
-          ghSettings, updateGhSettings, ghStatus, ghMsg } = useConfig()
+          ghSettings, updateGhSettings, ghStatus, ghMsg,
+          reloadFromRepo } = useConfig()
   return (
     <AppProvider allSITs={allSITs} saveSITs={saveSITs}>
       <AppInner
@@ -193,6 +195,7 @@ export default function App() {
         updateGhSettings={updateGhSettings}
         ghStatus={ghStatus}
         ghMsg={ghMsg}
+        reloadFromRepo={reloadFromRepo}
       />
     </AppProvider>
   )
