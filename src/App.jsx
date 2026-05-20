@@ -136,11 +136,20 @@ function AppInner({ statusMsg, exportConfig, importConfig, ghSettings, updateGhS
   // Track switcher state — 'dlp' | 'labels'
   const [activeTrack, setActiveTrack] = useState('dlp')
 
-  // Label state lives here so it persists across track switches
+  // Label state lives here so it persists across track switches.
+  // Check if stored config uses old IDs (e.g. highly_confidential) — if so, reset to defaults.
   const [labels, setLabels] = useState(() => {
     try {
       const saved = localStorage.getItem('bui_label_config')
-      if (saved) return JSON.parse(saved)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        // If any stored label has an ID that doesn't match current DEFAULT_LABELS, discard and reset
+        const currentIds = new Set(DEFAULT_LABELS.map(l => l.id))
+        const hasStaleId = parsed.some(l => !currentIds.has(l.id))
+        if (!hasStaleId) return parsed
+        // Stale — clear and fall through to defaults
+        localStorage.removeItem('bui_label_config')
+      }
     } catch (_) {}
     return [...DEFAULT_LABELS]
   })
