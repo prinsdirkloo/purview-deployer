@@ -36,7 +36,7 @@ export default function Header({ isDark, toggleTheme, activeTrack, setActiveTrac
           className={[ls.trackBtn, activeTrack === 'dlp' && ls.trackBtnActive].filter(Boolean).join(' ')}
           onClick={() => setActiveTrack('dlp')}
         >
-          DLP Deployment
+          Custom SIT &amp; DLP Deployment
         </button>
         <button
           className={[ls.trackBtn, activeTrack === 'labels' && ls.trackBtnActive].filter(Boolean).join(' ')}

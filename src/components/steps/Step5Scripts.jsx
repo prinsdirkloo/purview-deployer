@@ -3,8 +3,6 @@ import { useApp } from '../../context/AppContext.jsx'
 import StepNav from '../ui/StepNav.jsx'
 import { BtnSecondary, BtnDownload } from '../ui/Buttons.jsx'
 import { buildXML, buildScript1, buildScript2, downloadText } from '../../utils/scriptBuilder.js'
-import { buildLabelScript, downloadText as dlText } from '../../utils/labelScriptBuilder.js'
-import { DEFAULT_LABELS } from '../../data/labels.js'
 import s from './Steps.module.css'
 
 function ScriptBlock({ title, content, onDownload }) {
@@ -53,27 +51,12 @@ export default function Step5Scripts() {
   const script2 = useMemo(() => buildScript2(allSITs, selectedSITIds, selectedPolicyIds, policyConfigsMap, policyExtraSITs, adminUPN),
     [allSITs, selectedSITIds, selectedPolicyIds, policyConfigsMap, policyExtraSITs, adminUPN])
 
-  // Load saved label config from localStorage (set by the Labels track)
-  const script3 = useMemo(() => {
-    try {
-      const saved = localStorage.getItem('bui_label_config')
-      const labels = saved ? JSON.parse(saved) : DEFAULT_LABELS
-      return buildLabelScript(labels, adminUPN, '')
-    } catch (_) {
-      return buildLabelScript(DEFAULT_LABELS, adminUPN, '')
-    }
-  }, [adminUPN])
-
-  const LABEL_FILENAME = '03_Sensitivity_Labels_-_Deployment_Commands.ps1'
-
   const dlpFileCount = (xml ? 1 : 0) + (script1 ? 1 : 0) + 1
-  const totalFileCount = dlpFileCount + 1  // +1 for script3
 
   const dlAll = () => {
     if (xml)     setTimeout(() => downloadText(xml,     '01_SA_Custom_SITs_-_Rule_Package.xml', 'application/xml'), 0)
     if (script1) setTimeout(() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1', 'text/plain'), 350)
                  setTimeout(() => downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain'), 700)
-                 setTimeout(() => dlText(script3,        LABEL_FILENAME), 1050)
   }
 
   return (
@@ -98,22 +81,21 @@ export default function Step5Scripts() {
       <div className={s.alertWarn}>
         <span>⚠</span>
         <span>
-          Run in order: <strong>Script 1</strong> first, verify SITs, then <strong>Script 2</strong> (DLP policies),
-          then <strong>Script 3</strong> (Sensitivity Labels). All can run in the same PowerShell session.
+          Run in order: <strong>Script 1</strong> first, verify SITs, then <strong>Script 2</strong> (DLP policies).
+          Switch to the <strong>Sensitivity Labels</strong> track to generate and download the label deployment script separately.
         </span>
       </div>
 
-      {/* Download all banner */}
+      {/* Download all banner — DLP files only */}
       <div className={s.dlBanner}>
-        <span className={s.dlBannerLabel}>Download all {totalFileCount} files</span>
-        {xml     && <BtnDownload onClick={() => downloadText(xml,     '01_SA_Custom_SITs_-_Rule_Package.xml', 'application/xml')}>⬇ XML</BtnDownload>}
-        {script1 && <BtnDownload onClick={() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1',             'text/plain')}>⬇ Script 1</BtnDownload>}
-        <BtnDownload onClick={() =>            downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1',    'text/plain')}>⬇ Script 2</BtnDownload>
-        <BtnDownload onClick={() =>            dlText(script3,        LABEL_FILENAME)}>⬇ Script 3</BtnDownload>
+        <span className={s.dlBannerLabel}>Download all {dlpFileCount} file{dlpFileCount > 1 ? 's' : ''}</span>
+        {xml     && <BtnDownload onClick={() => downloadText(xml,     '01_SA_Custom_SITs_-_Rule_Package.xml',                 'application/xml')}>⬇ XML</BtnDownload>}
+        {script1 && <BtnDownload onClick={() => downloadText(script1, '01_SA_Custom_SITs_-_Deployment_Commands.ps1',          'text/plain')}>⬇ Script 1</BtnDownload>}
+        <BtnDownload onClick={() =>            downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain')}>⬇ Script 2</BtnDownload>
         <BtnDownload onClick={dlAll} style={{ fontWeight: 700 }}>⬇ All files</BtnDownload>
       </div>
 
-      {/* DLP files */}
+      {/* XML */}
       {xml ? (
         <ScriptBlock
           title="XML — Custom SIT Rule Package"
@@ -140,21 +122,6 @@ export default function Step5Scripts() {
         content={script2}
         onDownload={() => downloadText(script2, '02_SA_Custom_DLP_Policies_-_Deployment_Commands.ps1', 'text/plain')}
       />
-
-      <ScriptBlock
-        title="Script 3 — Deploy Sensitivity Labels"
-        content={script3}
-        onDownload={() => dlText(script3, LABEL_FILENAME)}
-      />
-
-      {/* Callout: script 3 uses label config from Labels track */}
-      <div className={s.alertInfo} style={{ marginTop: 0 }}>
-        <span>ℹ</span>
-        <span>
-          Script 3 uses the label configuration from the <strong>Sensitivity Labels</strong> track.
-          Switch to that track to customise label names, markings, and colours before downloading.
-        </span>
-      </div>
 
       <div className={s.nav}>
         <div className={s.navLeft}>
