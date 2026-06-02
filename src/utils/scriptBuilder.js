@@ -380,15 +380,33 @@ export function buildScript2(allSITs, selectedSITIds, selectedPolicyIds, policyC
     const isDevice = !!p.endpointOnly
     const varSuffix = p.group === 'financial' ? (isDevice ? 'FinDev' : 'Fin') : (isDevice ? 'PiiDev' : 'Pii')
     const tipVar = p.group === 'financial' ? '$tipFin' : '$tipPII'
-    const tipOpt = (cfg.locs || p.locs).includes('Exchange') ? 'Dialog' : 'Tip'
+
+    // NotifyUserType="PolicyTip" and NotifyPolicyTip* params are only valid when
+    // Exchange is among the policy locations. For document-only workloads
+    // (SharePoint/OneDrive/Teams), policy tips are surfaced automatically by the
+    // workload — passing these params causes portal validation failure with:
+    // "Email notification or policy tip enabled as user notification is only
+    // supported for Exchange."
+    // Fix: only include PolicyTip notification params when Exchange is in scope.
+    const effectiveLocs = cfg.locs || p.locs || []
+    const hasExchange   = effectiveLocs.includes('Exchange')
+    const tipOpt        = 'Dialog'  // Dialog = modal in Outlook; only used when hasExchange
+
     if (isDevice) {
       L.push(`if($epAvail){`)
       L.push(`    Deploy-DlpRuleWithRetry @{Name="Low Vol - ${cfg.name}";Policy="${cfg.name}";AdvancedRule=$${varSuffix}LowJson;GenerateAlert=@();NotifyUser=@();StopPolicyProcessing=$false}`)
       L.push(`    Deploy-DlpRuleWithRetry @{Name="High Vol - ${cfg.name}";Policy="${cfg.name}";AdvancedRule=$${varSuffix}HighJson;GenerateAlert=@("True");NotifyUser=@();BlockAccess=$true;BlockAccessScope="PerUser";ReportSeverityLevel="Medium";StopPolicyProcessing=$false}`)
       L.push(`}else{Write-Host "  [SKIP]  ${cfg.name} rules" -ForegroundColor Yellow}`)
-    } else {
+    } else if (hasExchange) {
+      // Exchange (or Exchange + documents): include full PolicyTip notification params
       L.push(`Deploy-DlpRuleWithRetry @{Name="Low Vol - ${cfg.name}";Policy="${cfg.name}";AdvancedRule=$${varSuffix}LowJson;GenerateAlert=@();NotifyUser=@();StopPolicyProcessing=$false}`)
       L.push(`Deploy-DlpRuleWithRetry @{Name="High Vol - ${cfg.name}";Policy="${cfg.name}";AdvancedRule=$${varSuffix}HighJson;GenerateAlert=@("True");NotifyUser=@("LastModifier");NotifyUserType="PolicyTip";NotifyPolicyTipCustomText=${tipVar};NotifyPolicyTipDisplayOption="${tipOpt}";BlockAccess=$true;BlockAccessScope="PerUser";ReportSeverityLevel="Medium";StopPolicyProcessing=$false}`)
+    } else {
+      // Document-only workloads (SharePoint/OneDrive/Teams): email notification only.
+      // PolicyTip params are omitted — policy tips on documents are shown automatically
+      // by the workload when a user accesses a restricted file.
+      L.push(`Deploy-DlpRuleWithRetry @{Name="Low Vol - ${cfg.name}";Policy="${cfg.name}";AdvancedRule=$${varSuffix}LowJson;GenerateAlert=@();NotifyUser=@();StopPolicyProcessing=$false}`)
+      L.push(`Deploy-DlpRuleWithRetry @{Name="High Vol - ${cfg.name}";Policy="${cfg.name}";AdvancedRule=$${varSuffix}HighJson;GenerateAlert=@("True");NotifyUser=@("LastModifier");BlockAccess=$true;BlockAccessScope="PerUser";ReportSeverityLevel="Medium";StopPolicyProcessing=$false}`)
     }
     L.push(``)
   })
