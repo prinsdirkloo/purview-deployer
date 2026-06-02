@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "savedAt": "2026-05-27T12:16:38.567Z",
-  "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
+  "savedAt": "2026-04-29T00:00:00.000Z",
+  "description": "BUI Purview Deployment Script Generator \u2014 Custom SIT Library. This file is the source of truth for your custom SIT library. Commit changes here to persist them across all browsers and devices. Three built-in Purview SITs (Credit Card, SA ID, SA Physical Addresses) are automatically included in DLP policies and are NOT stored here.",
   "sits": [
     {
       "id": "sa_company_reg",
@@ -9,6 +9,7 @@
       "desc": "CIPC format YYYY/XXXXXXX/XX near company keywords",
       "tag": "pii",
       "builtIn": false,
+      "isCustom": false,
       "guid": "5779832b-b170-494f-b18d-05dc50f078b0",
       "conf": "Medium",
       "group": "financial",
@@ -21,8 +22,7 @@
         "Incorporation Number",
         "Business Registration Number"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_mobile",
@@ -30,6 +30,7 @@
       "desc": "+27/27/0 prefix with valid SA carrier ranges",
       "tag": "pii",
       "builtIn": false,
+      "isCustom": false,
       "guid": "537c36cf-a3a9-4719-a4cd-183894bea0d9",
       "conf": "Medium",
       "group": "pii",
@@ -43,15 +44,15 @@
         "cellphone",
         "phone number"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_bank",
       "name": "South African Bank Account Number",
-      "desc": "10–12 digits near SA bank name + account type keywords",
+      "desc": "10\u201312 digits near SA bank name + account type keywords",
       "tag": "fin",
       "builtIn": false,
+      "isCustom": false,
       "guid": "a6b97e82-7f65-4c7e-82f6-7c850e815386",
       "conf": "Medium",
       "group": "financial",
@@ -66,8 +67,7 @@
         "bank statement",
         "branch code"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_company_tax",
@@ -75,6 +75,7 @@
       "desc": "SARS company tax ref starting with 9 (10 digits)",
       "tag": "fin",
       "builtIn": false,
+      "isCustom": false,
       "guid": "bd938c71-5bed-4156-91ec-a8cb68fd1525",
       "conf": "Medium",
       "group": "financial",
@@ -86,8 +87,7 @@
         "Company Tax Number",
         "SARS Tax Reference Number"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_dob",
@@ -95,6 +95,7 @@
       "desc": "Date formats near DOB keywords (use min 2 to reduce FPs)",
       "tag": "pii",
       "builtIn": false,
+      "isCustom": false,
       "guid": "07dee987-6d0f-4fdb-ab08-cff8bfbc31d8",
       "conf": "Medium",
       "group": "pii",
@@ -106,8 +107,7 @@
         "born",
         "yob"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_paye",
@@ -115,6 +115,7 @@
       "desc": "SARS PAYE registration starting with 7 (10 digits)",
       "tag": "fin",
       "builtIn": false,
+      "isCustom": false,
       "guid": "5f320260-18be-4c32-bfb0-261362f1b792",
       "conf": "Medium",
       "group": "financial",
@@ -125,8 +126,7 @@
         "PAYE Registration Number",
         "Pay as you Earn Number"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_personal_tax",
@@ -134,6 +134,7 @@
       "desc": "SARS personal tax ref format NNNN/NNNNNNN/NN",
       "tag": "fin",
       "builtIn": false,
+      "isCustom": false,
       "guid": "6a3a63d6-a69f-4189-8648-ae4c451f08b7",
       "conf": "Medium",
       "group": "pii",
@@ -143,8 +144,7 @@
         "Tax Reference Number",
         "Taxpayer Number"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_uif",
@@ -152,6 +152,7 @@
       "desc": "Unemployment Insurance Fund ref NNNNNN/N",
       "tag": "fin",
       "builtIn": false,
+      "isCustom": false,
       "guid": "e11a1e65-2ef2-4698-b360-6f9ebfc9823f",
       "conf": "Medium",
       "group": "financial",
@@ -161,8 +162,7 @@
         "UIF Reference Number",
         "Unemployment Insurance Fund"
       ],
-      "proximity": 50,
-      "isCustom": false
+      "proximity": 50
     },
     {
       "id": "sa_vat",
@@ -170,6 +170,7 @@
       "desc": "SARS VAT registration starting with 4 (10 digits)",
       "tag": "fin",
       "builtIn": false,
+      "isCustom": false,
       "guid": "44604fab-4b4c-4e7a-a301-5888163eb630",
       "conf": "Medium",
       "group": "financial",
@@ -179,35 +180,7 @@
         "VAT Registration Number",
         "Value Added Tax"
       ],
-      "proximity": 50,
-      "isCustom": false
-    },
-    {
-      "id": "custom_denmark_mobile_number_mpo13h5z",
-      "name": "Denmark Mobile Number",
-      "desc": "Danish mobile numbers consist of 8 digits, typically formatted as XXXX XXXX or XX XX XX XX. International format begins with +45 country code. All major carriers (Telia, TDC, Telenor) use this format. Issued by Danish Telecom Authority (DTA). Denmark does not have a centralized telecom regulator like some other countries. Mobile numbers are regulated by individual carriers. Format is strictly 8 digits after country code. Spaces and formatting variations are common in documents.",
-      "tag": "pii",
-      "group": "pii",
-      "builtIn": false,
-      "isCustom": true,
-      "guid": "edc30c5e-d964-4a97-9907-2aeee2f7d400",
-      "conf": "Medium",
-      "regex": "\\b(?:(?:\\+45|0045|\\(\\+45\\))?\\s?\\d{4}\\s?\\d{4}|(?:\\+45|0045)?\\s?\\d{2}\\s?\\d{2}\\s?\\d{2}\\s?\\d{2})\\b",
-      "keywords": [
-        "Denmark",
-        "Danish",
-        "Telia",
-        "TDC",
-        "Telenor",
-        "Dansk Telekommunikation",
-        "mobile number",
-        "mobilnummer",
-        "telefonnummer",
-        "telefonnr",
-        "mobil",
-        "Danish phone"
-      ],
-      "proximity": 300
+      "proximity": 50
     }
   ]
 }
