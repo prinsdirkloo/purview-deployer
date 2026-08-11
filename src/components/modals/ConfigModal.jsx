@@ -199,9 +199,6 @@ export default function ConfigModal({
   const [formOpen,   setFormOpen]   = useState(false)
   const [importErr,  setImportErr]  = useState('')
 
-  const buiCustom  = allSITs.filter(s => !s.builtIn && !s.isCustom)
-  const userCustom = allSITs.filter(s => s.isCustom)
-
   const openAdd  = () => { setEditingSIT(null); setFormOpen(true) }
   const openEdit = (sit) => { setEditingSIT(sit); setFormOpen(true) }
 
@@ -228,8 +225,48 @@ export default function ConfigModal({
     e.target.value = ''
   }
 
-  const renderRows = (group, canDelete) => group.map(sit => {
+  // ── Group all library SITs by country/region ─────────────────────────────
+  // Country comes from sit.country field if set, otherwise derived from the
+  // SIT name (e.g. "Kenyan Tax PIN" → "Kenya") or falls back to "Other"
+  const allLibrarySITs = allSITs.filter(s => !s.builtIn)
+
+  function deriveCountry(sit) {
+    if (sit.country) return sit.country
+    const n = sit.name || ''
+    const m = n.match(/^(South African?|Nigerian?|Kenyan?|Ghanaian?|UAE|Mauritian?|Zambian?|Seychellois?)\b/i)
+    if (m) {
+      const w = m[1].toLowerCase()
+      if (w.startsWith('south afr')) return 'South Africa'
+      if (w.startsWith('niger'))     return 'Nigeria'
+      if (w.startsWith('kenya'))     return 'Kenya'
+      if (w.startsWith('ghana'))     return 'Ghana'
+      if (w === 'uae')               return 'UAE'
+      if (w.startsWith('maurit'))    return 'Mauritius'
+      if (w.startsWith('zamb'))      return 'Zambia'
+      if (w.startsWith('seychell'))  return 'Seychelles'
+    }
+    return 'Other'
+  }
+
+  // Build ordered map: { countryName → [sits] }
+  const grouped = {}
+  allLibrarySITs.forEach(sit => {
+    const c = deriveCountry(sit)
+    if (!grouped[c]) grouped[c] = []
+    grouped[c].push(sit)
+  })
+  // Sort: South Africa first (it's the base), then alphabetical
+  const sortedCountries = Object.keys(grouped).sort((a, b) => {
+    if (a === 'South Africa') return -1
+    if (b === 'South Africa') return  1
+    if (a === 'Other')        return  1
+    if (b === 'Other')        return -1
+    return a.localeCompare(b)
+  })
+
+  const renderRows = (group) => group.map(sit => {
     const tagClass = sit.tag === 'pii' ? s.tagPii : s.tagFin
+    const canDelete = !!sit.isCustom
     const regexPreview = sit.regex
       ? <code style={{ fontSize: 10, maxWidth: 130, display: 'block', overflow: 'hidden',
           textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={sit.regex}>{sit.regex}</code>
@@ -242,9 +279,6 @@ export default function ConfigModal({
         <td className={s.tdName}>{sit.name}</td>
         <td><span className={[s.tagBadge, tagClass].join(' ')}>{sit.tag === 'pii' ? 'PII' : 'Fin'}</span></td>
         <td className={s.tdMeta}>{sit.group}</td>
-        <td><span className={[s.rowType, sit.isCustom ? s.rowTypeCustom : ''].filter(Boolean).join(' ')}>
-          {sit.isCustom ? 'Custom' : 'BUI'}
-        </span></td>
         <td>{regexPreview}</td>
         <td className={s.tdMeta} style={{ maxWidth: 140 }}>{kwPreview}</td>
         <td className={s.tdMeta}>{sit.proximity || 50}</td>
@@ -296,36 +330,35 @@ export default function ConfigModal({
         <div className={s.configToolbar}>
           <button className={s.addBtn} onClick={openAdd}>+ Add Custom SIT</button>
           <span className={s.configCount}>
-            {buiCustom.length} BUI built-in &nbsp;·&nbsp; {userCustom.length} user-added custom
+            {allLibrarySITs.length} SIT{allLibrarySITs.length !== 1 ? 's' : ''} across {sortedCountries.length} region{sortedCountries.length !== 1 ? 's' : ''}
           </span>
         </div>
 
-        {/* Table */}
+        {/* Table — grouped by country/region */}
         <div style={{ overflowX: 'auto' }}>
           <table className={s.configTable}>
             <thead>
               <tr>
-                <th>Name</th><th>Tag</th><th>Group</th><th>Type</th>
+                <th>Name</th><th>Tag</th><th>Group</th>
                 <th>Regex</th><th>Keywords</th><th>Prox.</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {buiCustom.length > 0 && <>
-                <tr><td colSpan={8} className={s.groupHeader}>BUI Custom SITs (South African)</td></tr>
-                {renderRows(buiCustom, false)}
-              </>}
-              {userCustom.length > 0 && <>
-                <tr><td colSpan={8} className={s.groupHeader}>User-added Custom SITs</td></tr>
-                {renderRows(userCustom, true)}
-              </>}
-              {buiCustom.length === 0 && userCustom.length === 0 && (
+              {allLibrarySITs.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ padding: '2rem', textAlign: 'center',
+                  <td colSpan={7} style={{ padding: '2rem', textAlign: 'center',
                     color: 'var(--text-m)', fontStyle: 'italic' }}>
                     No SITs in library yet. Click + Add Custom SIT to get started.
                   </td>
                 </tr>
-              )}
+              ) : sortedCountries.map(country => (
+                <React.Fragment key={country}>
+                  <tr>
+                    <td colSpan={7} className={s.groupHeader}>{country}</td>
+                  </tr>
+                  {renderRows(grouped[country])}
+                </React.Fragment>
+              ))}
             </tbody>
           </table>
         </div>

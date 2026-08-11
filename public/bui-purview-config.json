@@ -22,7 +22,8 @@
         "Incorporation Number",
         "Business Registration Number"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_mobile",
@@ -44,7 +45,8 @@
         "cellphone",
         "phone number"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_bank",
@@ -67,7 +69,8 @@
         "bank statement",
         "branch code"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_company_tax",
@@ -87,7 +90,8 @@
         "Company Tax Number",
         "SARS Tax Reference Number"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_dob",
@@ -107,7 +111,8 @@
         "born",
         "yob"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_paye",
@@ -126,7 +131,8 @@
         "PAYE Registration Number",
         "Pay as you Earn Number"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_personal_tax",
@@ -144,7 +150,8 @@
         "Tax Reference Number",
         "Taxpayer Number"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_uif",
@@ -162,7 +169,8 @@
         "UIF Reference Number",
         "Unemployment Insurance Fund"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     },
     {
       "id": "sa_vat",
@@ -180,7 +188,8 @@
         "VAT Registration Number",
         "Value Added Tax"
       ],
-      "proximity": 50
+      "proximity": 50,
+      "country": "South Africa"
     }
   ]
 }

@@ -91,8 +91,8 @@ function LibraryPicker({ open, onClose, allLibrarySITs, visibleIds, onAdd }) {
 export default function Step1SITs() {
   const { allSITs, selectedSITIds, toggleSIT, selectAllSITs, goTo, currentStep } = useApp()
   const [pickerOpen, setPickerOpen] = useState(false)
-  // IDs shown on the grid — starts with all library SITs, user can add more from the library
-  const [visibleIds, setVisibleIds] = useState(() => new Set(allSITs.map(s => s.id)))
+  // Starts empty — user explicitly adds SITs from the library picker
+  const [visibleIds, setVisibleIds] = useState(() => new Set())
 
   // Sync visibleIds if allSITs changes (e.g. after config edit)
   const visibleSITs = allSITs.filter(s => visibleIds.has(s.id))
@@ -138,7 +138,18 @@ export default function Step1SITs() {
       </div>
 
       <div className={s.gridTwo}>
-        {visibleSITs.map(sit => (
+        {visibleSITs.length === 0 ? (
+          <div style={{
+            gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 1rem',
+            color: 'var(--text-m)', fontSize: 14, lineHeight: 1.7,
+          }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>📚</div>
+            <div style={{ fontWeight: 700, color: 'var(--text-s)', marginBottom: 6 }}>
+              No SITs added yet
+            </div>
+            <div>Click <strong style={{ color: 'var(--orange-d)' }}>+ Add from library</strong> above to select the SITs to include in this deployment.</div>
+          </div>
+        ) : visibleSITs.map(sit => (
           <SITCard
             key={sit.id}
             sit={sit}
