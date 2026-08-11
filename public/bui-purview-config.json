@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:51:33.150Z",
+  "savedAt": "2026-08-11T07:55:14.274Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -486,6 +486,33 @@
         "Tax payer ID",
         "TPIN number",
         "Zambian tax identifier"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_seychelles_tin_msod81r5",
+      "name": "Seychelles TIN",
+      "desc": "7 digits followed by 1 letter (e.g., 1234567A). Issued by Seychelles Revenue Commission (SRC). Seychelles TIN format consists of 7 numerical digits followed by a single letter suffix. The letter typically represents the type of taxpayer or registration category. SRC is the primary tax authority responsible for issuing and managing TINs in Seychelles.",
+      "tag": "fin",
+      "group": "financial",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "e9a043c2-6810-4d48-85a5-e372fda384fc",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{7}[A-Z]{1}\\b",
+      "keywords": [
+        "Seychelles Revenue Commission",
+        "SRC",
+        "Tax Identification Number",
+        "TIN",
+        "Numéro d'Identification Fiscale",
+        "NIF",
+        "Seychelles tax",
+        "Identification number",
+        "Fiscal identification",
+        "Tax registration",
+        "Identification fiscale",
+        "Revenue identification"
       ],
       "proximity": 50
     }
