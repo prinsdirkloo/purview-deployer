@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:49:35.482Z",
+  "savedAt": "2026-08-11T07:51:33.150Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -459,6 +459,33 @@
         "Company registration",
         "MRA registration",
         "BRN Mauritius"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_zambia_tpin_msod3b4t",
+      "name": "Zambia TPIN",
+      "desc": "10 consecutive digits with no separators or prefixes. Issued by Zambia Revenue Authority (ZRA). Zambia Revenue Authority issues TPINs as unique taxpayer identifiers. Format consists of exactly 10 digits. This is distinct from other African nations' tax identification systems.",
+      "tag": "fin",
+      "group": "financial",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "7bf0a078-8053-49ca-9bc6-43e49af977ac",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{10}\\b",
+      "keywords": [
+        "Zambia Revenue Authority",
+        "ZRA",
+        "Tax Payer Identification Number",
+        "TPIN",
+        "Zambian TPIN",
+        "Tax identification",
+        "ZRA TPIN",
+        "Taxpayer number",
+        "Zambia tax number",
+        "Tax payer ID",
+        "TPIN number",
+        "Zambian tax identifier"
       ],
       "proximity": 50
     }
