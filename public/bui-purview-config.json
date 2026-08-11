@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:29:37.478Z",
+  "savedAt": "2026-08-11T07:40:16.103Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -405,6 +405,33 @@
         "revenue authority number",
         "Ghana taxpayer",
         "fiscal number"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_uae_trn_msocospy",
+      "name": "UAE TRN",
+      "desc": "15-digit numeric identifier issued by the UAE Federal Tax Authority for tax registration purposes. Issued by Federal Tax Authority (FTA). UAE TRN is a 15-digit number assigned to businesses and entities for VAT and tax registration. The Federal Tax Authority (FTA) is the sole issuing authority in the UAE. No specific prefix or separator pattern is enforced in the standard format.",
+      "tag": "fin",
+      "group": "financial",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "ed246d90-e984-429a-a9d4-de01864a8c4b",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{15}\\b",
+      "keywords": [
+        "Tax Registration Number",
+        "TRN",
+        "United Arab Emirates",
+        "UAE",
+        "Federal Tax Authority",
+        "FTA",
+        "هيئة الاتحادية للضرائب",
+        "Tax ID",
+        "Registration Number",
+        "Taxpayer Identification",
+        "Federal Tax ID",
+        "Emirati Tax Number"
       ],
       "proximity": 50
     }
