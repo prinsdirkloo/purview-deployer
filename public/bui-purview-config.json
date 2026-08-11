@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:09:56.004Z",
+  "savedAt": "2026-08-11T07:12:00.712Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -260,6 +260,33 @@
         "Cellular Number",
         "Cell Phone",
         "Mobile"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_mauritius_nic_msobogjr",
+      "name": "Mauritius NIC",
+      "desc": "Mauritius NIC format: 1 letter + 6 digits + 1 letter (e.g., A123456B). The first letter typically represents the gender and year of birth, followed by a 6-digit number, and ending with a checksum letter. Issued by Ministry of Civil Status and Nationality (NIC). Mauritius NIC is the primary national identity document. Format consists of 8 characters total: letter-digit-digit-digit-digit-digit-digit-letter. Used for civil registration and identification purposes by the Ministry of Civil Status and Nationality.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "8e4649ff-a358-4910-b2ef-6e6107355650",
+      "conf": "Medium",
+      "regex": "\\b[A-Z]{1}\\d{6}[A-Z]{1}\\b",
+      "keywords": [
+        "National Identity Card",
+        "NIC",
+        "Mauritius",
+        "National Identity Card Number",
+        "Carte d'Identité Nationale",
+        "CIN",
+        "Ministry of Civil Status",
+        "Identity Number",
+        "Mauritian ID",
+        "NIC Mauritius",
+        "Identification Number",
+        "Civil Status Authority"
       ],
       "proximity": 50
     }
