@@ -7,7 +7,7 @@ import m from '../modals/Modals.module.css'
 import { BUILTIN_CATALOGUE } from '../../data/builtinCatalogue.js'
 import { SILENT_PURVIEW_SITS } from '../../data/sits.js'
 
-// ── SITCard (main grid) ───────────────────────────────────────────────────────
+// ── CHECK icon ────────────────────────────────────────────────────────────────
 const CHECK = (
   <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
     <path d="M1 3.5L3 5.5L8 1" stroke="white" strokeWidth="1.8"
@@ -15,6 +15,7 @@ const CHECK = (
   </svg>
 )
 
+// ── SITCard (main deployment grid) ───────────────────────────────────────────
 function SITCard({ sit, selected, onToggle }) {
   const tagLabel = sit.tag === 'pii' ? 'PII' : 'Financial'
   const tagClass = sit.tag === 'pii' ? s.badgePii : s.badgeFin
@@ -39,7 +40,28 @@ function SITCard({ sit, selected, onToggle }) {
   )
 }
 
-// ── Country derivation ────────────────────────────────────────────────────────
+// ── Shared helpers ────────────────────────────────────────────────────────────
+const TAG_BADGE = (tag) => ({
+  fontSize: 9, fontWeight: 700, padding: '1px 7px', borderRadius: 10,
+  textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
+  background: tag === 'pii' ? 'rgba(99,102,241,0.15)' : 'rgba(217,134,28,0.15)',
+  color:      tag === 'pii' ? '#818cf8' : 'var(--orange-d)',
+})
+
+const REGION_LABELS = {
+  ZA:     'South Africa',
+  Global: 'Global',
+  EU:     'European Union',
+  UK:     'United Kingdom',
+  US:     'United States',
+  APAC:   'Asia Pacific',
+  LATAM:  'Latin America',
+  MEA:    'Middle East & Africa',
+  Cloud:  'Cloud / Credentials',
+}
+const REGION_ORDER = ['ZA','Global','EU','UK','US','APAC','LATAM','MEA','Cloud']
+
+// Derive country/region label for custom SITs (no region field)
 function deriveCountry(sit) {
   if (sit.country) return sit.country
   const n = (sit.name || '').toLowerCase()
@@ -51,56 +73,49 @@ function deriveCountry(sit) {
   if (n.includes('zambi'))                              return 'Zambia'
   if (n.includes('seychell'))                           return 'Seychelles'
   if (n.includes('kenya') || n.includes('kenyan'))      return 'Kenya'
-  if (n.includes('uganda') || n.includes('ugandan'))    return 'Uganda'
-  if (n.includes('tanzani'))                            return 'Tanzania'
   if (n.includes('namibia') || n.includes('namibian'))  return 'Namibia'
   if (n.includes('zimbabw'))                            return 'Zimbabwe'
   if (n.includes('botswana'))                           return 'Botswana'
-  if (n.includes('u.k.') || n.includes('united kingdom') || n.includes('british')) return 'United Kingdom'
+  if (n.includes('u.k.') || n.includes('british'))      return 'United Kingdom'
   if (n.includes('u.s.') && !n.includes('u.s. / u.k.')) return 'United States'
-  if (n.includes('u.s. / u.k.'))                        return 'United Kingdom'
-  if (n.includes('australian'))                          return 'Australia'
   if (n.includes('australia'))                           return 'Australia'
-  if (n.includes('canadian') || n.includes('canada'))   return 'Canada'
+  if (n.includes('canada'))                              return 'Canada'
   if (n.includes('indian') && !n.includes('indiana'))   return 'India'
   return 'Other'
 }
 
-// For built-in SITs the region field is more meaningful than name-parsing
-function builtinCountryOrRegion(sit) {
-  const rMap = {
-    'ZA':     'South Africa',
-    'Global': 'Global',
-    'EU':     'European Union',
-    'UK':     'United Kingdom',
-    'US':     'United States',
-    'APAC':   'Asia Pacific',
-    'LATAM':  'Latin America',
-    'MEA':    'Middle East & Africa',
-    'Cloud':  'Cloud / Credentials',
-  }
-  return rMap[sit.region] || sit.region || 'Other'
-}
-
-// ── Group builder ─────────────────────────────────────────────────────────────
-function buildGroups(sits, groupBy, isBuiltin) {
+// Group an array of SITs by the secondary key
+function groupSITs(sits, groupBy, isBuiltin) {
   const map = {}
   sits.forEach(sit => {
     let key
     if (groupBy === 'tag') {
       key = sit.tag === 'pii' ? 'PII (Personal Data)' : 'Financial'
     } else {
-      key = isBuiltin ? builtinCountryOrRegion(sit) : deriveCountry(sit)
+      // region grouping
+      if (isBuiltin) {
+        key = REGION_LABELS[sit.region] || sit.region || 'Other'
+      } else {
+        key = deriveCountry(sit)
+      }
     }
     if (!map[key]) map[key] = []
     map[key].push(sit)
   })
-  const PRIORITY = ['South Africa', 'Global', 'PII (Personal Data)']
+
   const keys = Object.keys(map).sort((a, b) => {
-    const ai = PRIORITY.indexOf(a), bi = PRIORITY.indexOf(b)
-    if (ai !== -1 && bi !== -1) return ai - bi
-    if (ai !== -1) return -1
-    if (bi !== -1) return  1
+    if (groupBy === 'region') {
+      // For built-in: use REGION_ORDER; for custom: SA first then alpha
+      const aIdx = isBuiltin
+        ? REGION_ORDER.indexOf(Object.keys(REGION_LABELS).find(k => REGION_LABELS[k] === a) || a)
+        : (a === 'South Africa' ? -1 : a === 'Other' ? 999 : 0)
+      const bIdx = isBuiltin
+        ? REGION_ORDER.indexOf(Object.keys(REGION_LABELS).find(k => REGION_LABELS[k] === b) || b)
+        : (b === 'South Africa' ? -1 : b === 'Other' ? 999 : 0)
+      if (aIdx !== bIdx && aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
+    }
+    if (a === 'South Africa' || a === 'Global' || a === 'PII (Personal Data)') return -1
+    if (b === 'South Africa' || b === 'Global' || b === 'PII (Personal Data)') return  1
     if (a === 'Other') return  1
     if (b === 'Other') return -1
     return a.localeCompare(b)
@@ -108,109 +123,143 @@ function buildGroups(sits, groupBy, isBuiltin) {
   return { map, keys }
 }
 
-// ── Shared styles for picker rows ─────────────────────────────────────────────
-const TAG_STYLE = (tag) => ({
-  fontSize: 9, fontWeight: 700, padding: '1px 7px', borderRadius: 10,
-  textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
-  background: tag === 'pii' ? 'rgba(99,102,241,0.15)' : 'rgba(217,134,28,0.15)',
-  color:      tag === 'pii' ? '#818cf8' : 'var(--orange-d)',
-})
-
-const GROUP_HEADER_STYLE = {
-  padding: '7px 12px 5px',
-  fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-  letterSpacing: '0.1em', color: 'var(--orange-d)',
-  borderBottom: '1px solid var(--border)',
-  background: 'var(--bg-s)',
-  position: 'sticky', top: 0, zIndex: 1,
-}
-
-// ── Section component — renders one group of SITs with headers ────────────────
-function PickerSection({ title, sits, groupBy, isBuiltin, visibleIds, addedIds, onAdd, onRemove }) {
-  const [expanded, setExpanded] = useState(true)
+// ── Sub-group rows within a section ──────────────────────────────────────────
+function SubGroup({ groupKey, sits, visibleIds, onAdd }) {
+  const [open, setOpen] = useState(true)
+  const available = sits.filter(s => !visibleIds.has(s.id || s.guid))
+  const added     = sits.length - available.length
   if (sits.length === 0) return null
-
-  const available   = sits.filter(s => !visibleIds.has(s.id || s.guid))
-  const alreadyAdded = sits.filter(s =>  visibleIds.has(s.id || s.guid))
-  const { map, keys } = buildGroups(available, groupBy, isBuiltin)
-
   return (
-    <div style={{ marginBottom: 16 }}>
-      {/* Section header */}
+    <div>
+      {/* Sub-group header */}
       <div
-        onClick={() => setExpanded(e => !e)}
+        onClick={() => setOpen(o => !o)}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 14px', cursor: 'pointer',
-          background: 'var(--bg-card)', border: '1px solid var(--border)',
-          borderRadius: expanded ? 'var(--r-md) var(--r-md) 0 0' : 'var(--r-md)',
-          borderBottom: expanded ? 'none' : '1px solid var(--border)',
+          padding: '6px 14px', cursor: 'pointer',
+          background: 'var(--bg-s)', borderBottom: '1px solid var(--border)',
+          position: 'sticky', top: 44, zIndex: 1,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+            letterSpacing: '0.1em', color: 'var(--orange-d)' }}>
+            {groupKey}
+          </span>
+          <span style={{ fontSize: 10, color: 'var(--text-m)' }}>
+            {available.length} available{added > 0 ? ` · ${added} added` : ''}
+          </span>
+        </div>
+        <span style={{ fontSize: 10, color: 'var(--text-m)' }}>{open ? '▲' : '▼'}</span>
+      </div>
+
+      {open && available.map(sit => {
+        const id = sit.id || sit.guid
+        return (
+          <div key={id} className={m.pickerItem}>
+            <div className={m.pickerItemInfo}>
+              <div className={m.pickerItemName} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span>{sit.name}</span>
+                <span style={TAG_BADGE(sit.tag)}>{sit.tag === 'pii' ? 'PII' : 'Financial'}</span>
+                {sit.conf && (
+                  <span style={{ fontSize: 9, color: 'var(--text-m)', fontWeight: 500 }}>
+                    {sit.conf} confidence
+                  </span>
+                )}
+              </div>
+              <div className={m.pickerItemMeta}>
+                {sit.desc || (sit.region ? `Built-in Purview SIT` : '—')}
+              </div>
+            </div>
+            <button className={m.pickerAddBtn} onClick={() => onAdd(id, sit)}>+ Add</button>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// ── Primary section (OOTB or Custom) ─────────────────────────────────────────
+function PrimarySection({ title, subtitle, accentColor, sits, groupBy, isBuiltin, visibleIds, onAdd, query }) {
+  const [open, setOpen] = useState(true)
+
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase()
+    return q
+      ? sits.filter(s =>
+          s.name.toLowerCase().includes(q) ||
+          (s.desc || '').toLowerCase().includes(q) ||
+          (s.region || '').toLowerCase().includes(q))
+      : sits
+  }, [sits, query])
+
+  const totalAvailable = filtered.filter(s => !visibleIds.has(s.id || s.guid)).length
+  const totalAdded     = sits.filter(s => visibleIds.has(s.id || s.guid)).length
+
+  const { map, keys } = groupSITs(filtered, groupBy, isBuiltin)
+
+  return (
+    <div style={{ marginBottom: 12 }}>
+      {/* Primary section header */}
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '11px 16px', cursor: 'pointer',
+          background: 'var(--bg-card)',
+          border: `1px solid var(--border)`,
+          borderLeft: `4px solid ${accentColor}`,
+          borderRadius: open ? 'var(--r-md) var(--r-md) 0 0' : 'var(--r-md)',
+          borderBottom: open ? 'none' : `1px solid var(--border)`,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{title}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{title}</span>
+          <span style={{ fontSize: 12, color: 'var(--text-m)' }}>{subtitle}</span>
           <span style={{
-            fontSize: 11, padding: '1px 8px', borderRadius: 10,
-            background: 'rgba(217,134,28,0.12)', color: 'var(--orange-d)', fontWeight: 600,
+            fontSize: 11, padding: '2px 9px', borderRadius: 10, fontWeight: 600,
+            background: `${accentColor}22`, color: accentColor,
           }}>
-            {available.length} available
+            {totalAvailable} available
           </span>
-          {alreadyAdded.length > 0 && (
+          {totalAdded > 0 && (
             <span style={{
-              fontSize: 11, padding: '1px 8px', borderRadius: 10,
-              background: 'rgba(74,222,128,0.12)', color: '#4ade80', fontWeight: 600,
+              fontSize: 11, padding: '2px 9px', borderRadius: 10, fontWeight: 600,
+              background: 'rgba(74,222,128,0.12)', color: '#4ade80',
             }}>
-              {alreadyAdded.length} added
+              {totalAdded} added ✓
             </span>
           )}
         </div>
-        <span style={{ fontSize: 11, color: 'var(--text-m)' }}>{expanded ? '▲' : '▼'}</span>
+        <span style={{ fontSize: 12, color: 'var(--text-m)', fontWeight: 600 }}>
+          {open ? '▲ Collapse' : '▼ Expand'}
+        </span>
       </div>
 
-      {expanded && (
+      {open && (
         <div style={{
           border: '1px solid var(--border)', borderTop: 'none',
           borderRadius: '0 0 var(--r-md) var(--r-md)',
-          overflow: 'hidden',
+          overflow: 'hidden', maxHeight: 420, overflowY: 'auto',
         }}>
-          {available.length === 0 && (
-            <div style={{ padding: '1.25rem', textAlign: 'center', color: 'var(--text-m)', fontSize: 13, fontStyle: 'italic' }}>
-              All {title.toLowerCase()} SITs have been added.
+          {filtered.length === 0 ? (
+            <div style={{ padding: '1.5rem', textAlign: 'center',
+              color: 'var(--text-m)', fontStyle: 'italic', fontSize: 13 }}>
+              No matching SITs.
             </div>
-          )}
-          {keys.map(groupKey => (
-            <div key={groupKey}>
-              <div style={GROUP_HEADER_STYLE}>
-                {groupKey}
-                <span style={{ fontWeight: 400, color: 'var(--text-m)', marginLeft: 6, textTransform: 'none', letterSpacing: 0 }}>
-                  ({map[groupKey].length})
-                </span>
-              </div>
-              {map[groupKey].map(sit => {
-                const id = sit.id || sit.guid
-                return (
-                  <div key={id} className={m.pickerItem}>
-                    <div className={m.pickerItemInfo}>
-                      <div className={m.pickerItemName} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                        <span>{sit.name}</span>
-                        <span style={TAG_STYLE(sit.tag)}>{sit.tag === 'pii' ? 'PII' : 'Financial'}</span>
-                        {sit.conf && (
-                          <span style={{ fontSize: 9, color: 'var(--text-m)', fontWeight: 600 }}>
-                            {sit.conf} confidence
-                          </span>
-                        )}
-                      </div>
-                      <div className={m.pickerItemMeta}>
-                        {sit.desc || (isBuiltin ? `Built-in Purview SIT — ${sit.conf || 'Medium'} confidence. Region: ${sit.region || '—'}` : '—')}
-                      </div>
-                    </div>
-                    <button className={m.pickerAddBtn} onClick={() => onAdd(id, sit)}>
-                      + Add
-                    </button>
-                  </div>
-                )
-              })}
+          ) : totalAvailable === 0 ? (
+            <div style={{ padding: '1.25rem', textAlign: 'center',
+              color: '#4ade80', fontSize: 13 }}>
+              ✓ All {title.toLowerCase()} SITs have been added to your deployment.
             </div>
+          ) : keys.map(gk => (
+            <SubGroup
+              key={gk}
+              groupKey={gk}
+              sits={map[gk]}
+              visibleIds={visibleIds}
+              onAdd={onAdd}
+            />
           ))}
         </div>
       )}
@@ -221,58 +270,47 @@ function PickerSection({ title, sits, groupBy, isBuiltin, visibleIds, addedIds, 
 // ── Main picker modal ─────────────────────────────────────────────────────────
 function LibraryPicker({ open, onClose, customSITs, visibleIds, onAdd }) {
   const [query,   setQuery]   = useState('')
-  const [groupBy, setGroupBy] = useState('country')
+  const [groupBy, setGroupBy] = useState('region')
 
-  // Silent built-in SITs that are always auto-included — exclude from picker
-  const silentIds = new Set(SILENT_PURVIEW_SITS.map(s => s.guid))
+  // Silent built-ins excluded from picker (auto-included in policies)
+  const silentGuids = new Set(SILENT_PURVIEW_SITS.map(s => s.guid))
+  const builtinSITs = BUILTIN_CATALOGUE.filter(s => !silentGuids.has(s.guid))
 
-  // Built-in catalogue — exclude already-silent ones
-  const builtinSITs = BUILTIN_CATALOGUE.filter(s => !silentIds.has(s.guid))
-
-  // Filter both lists by search query
-  const q = query.toLowerCase()
-  const filteredCustom  = q
-    ? customSITs.filter(s => s.name.toLowerCase().includes(q) || (s.desc || '').toLowerCase().includes(q))
-    : customSITs
-  const filteredBuiltin = q
-    ? builtinSITs.filter(s => s.name.toLowerCase().includes(q))
-    : builtinSITs
-
-  const totalAvailable = [...customSITs, ...builtinSITs].filter(s => !visibleIds.has(s.id || s.guid)).length
+  const totalAdded = [...customSITs, ...builtinSITs]
+    .filter(s => visibleIds.has(s.id || s.guid)).length
 
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title="Add SITs from library"
+      title="Add SITs to this deployment"
       wide
       footer={
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
           <span style={{ fontSize: 12, color: 'var(--text-m)' }}>
-            {totalAvailable} SIT{totalAvailable !== 1 ? 's' : ''} available to add
+            {totalAdded} SIT{totalAdded !== 1 ? 's' : ''} added to deployment
           </span>
           <button className={m.closeBtn} onClick={onClose}>Done</button>
         </div>
       }
     >
-      {/* Search + group-by toggle */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+      {/* Search + secondary group toggle */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
         <input
           type="text"
           className={m.pickerSearch}
-          placeholder="Search all SITs…"
+          placeholder="Search all SITs by name or description…"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoFocus
           style={{ flex: 1, marginBottom: 0 }}
         />
-        <div style={{
-          display: 'flex', border: '1px solid var(--border)',
-          borderRadius: 'var(--r-md)', overflow: 'hidden', flexShrink: 0,
-        }}>
+        {/* Secondary grouping toggle */}
+        <div style={{ display: 'flex', border: '1px solid var(--border)',
+          borderRadius: 'var(--r-md)', overflow: 'hidden', flexShrink: 0 }}>
           {[
-            { value: 'country', label: '🌍 Region' },
-            { value: 'tag',     label: '🏷 Tag'    },
+            { value: 'region', label: '🌍 Region' },
+            { value: 'tag',    label: '🏷 Tag'    },
           ].map(opt => (
             <button
               key={opt.value}
@@ -292,35 +330,43 @@ function LibraryPicker({ open, onClose, customSITs, visibleIds, onAdd }) {
         </div>
       </div>
 
-      {/* Explainer */}
-      <p style={{ fontSize: 12, color: 'var(--text-m)', margin: '0 0 14px', lineHeight: 1.6 }}>
-        <strong style={{ color: 'var(--text-s)' }}>Custom SITs</strong> are deployed via the XML rule package and require Script 1 to run first.&nbsp;
-        <strong style={{ color: 'var(--text-s)' }}>Built-in Purview SITs</strong> already exist in every Purview tenant — no deployment needed, they are referenced directly in the DLP policy rules.
-      </p>
+      {/* Context note */}
+      <div style={{
+        fontSize: 12, color: 'var(--text-m)', marginBottom: 14, lineHeight: 1.6,
+        padding: '8px 12px', background: 'var(--bg-s)',
+        borderRadius: 'var(--r-md)', border: '1px solid var(--border)',
+      }}>
+        <strong style={{ color: 'var(--text-s)' }}>Built-in Purview SITs</strong> — 327 SITs pre-loaded in every Purview tenant.
+        No deployment required; referenced directly in DLP policy rules.&nbsp;&nbsp;
+        <strong style={{ color: 'var(--text-s)' }}>Custom SITs</strong> — deployed via XML rule package (Script 1).
+        Manage the custom library via <strong>⚙ Config</strong>.
+      </div>
 
-      {/* ── Custom SITs section ── */}
-      <PickerSection
-        title="Custom SITs"
-        sits={filteredCustom}
-        groupBy={groupBy}
-        isBuiltin={false}
-        visibleIds={visibleIds}
-        onAdd={onAdd}
-      />
-
-      {/* ── Built-in Purview SITs section ── */}
-      <PickerSection
+      {/* ── PRIMARY SECTION 1: Built-in Purview SITs ── */}
+      <PrimarySection
         title="Built-in Purview SITs"
-        sits={filteredBuiltin}
+        subtitle={`${builtinSITs.length} SITs · No deployment required`}
+        accentColor="var(--orange)"
+        sits={builtinSITs}
         groupBy={groupBy}
         isBuiltin={true}
         visibleIds={visibleIds}
         onAdd={onAdd}
+        query={query}
       />
 
-      {filteredCustom.length === 0 && filteredBuiltin.length === 0 && (
-        <div className={m.pickerEmpty}>No SITs match your search.</div>
-      )}
+      {/* ── PRIMARY SECTION 2: Custom SITs ── */}
+      <PrimarySection
+        title="Custom SITs"
+        subtitle={`${customSITs.length} SITs · Deployed via XML rule package`}
+        accentColor="#818cf8"
+        sits={customSITs}
+        groupBy={groupBy}
+        isBuiltin={false}
+        visibleIds={visibleIds}
+        onAdd={onAdd}
+        query={query}
+      />
     </Modal>
   )
 }
@@ -328,37 +374,34 @@ function LibraryPicker({ open, onClose, customSITs, visibleIds, onAdd }) {
 // ── Main Step1 component ──────────────────────────────────────────────────────
 export default function Step1SITs() {
   const { allSITs, selectedSITIds, toggleSIT, selectAllSITs, goTo, currentStep } = useApp()
-  const [pickerOpen, setPickerOpen] = useState(false)
-  // Starts empty — user explicitly adds from the picker
-  const [visibleIds, setVisibleIds] = useState(() => new Set())
-  // Extra built-in SITs added via picker (stored as full objects since they're not in allSITs)
+  const [pickerOpen,    setPickerOpen]    = useState(false)
+  const [visibleIds,    setVisibleIds]    = useState(() => new Set())
   const [addedBuiltins, setAddedBuiltins] = useState([])
 
-  // All SITs currently shown on the grid
   const customVisible  = allSITs.filter(s => visibleIds.has(s.id))
   const builtinVisible = addedBuiltins.filter(s => visibleIds.has(s.guid))
-  const visibleSITs    = [...customVisible, ...builtinVisible]
-  const canNext        = selectedSITIds.size > 0
+  const allVisible     = [
+    ...customVisible,
+    ...builtinVisible.map(s => ({
+      id:      s.guid,
+      name:    s.name,
+      desc:    `Built-in Purview SIT — ${s.conf || 'Medium'} confidence`,
+      tag:     s.tag,
+      builtIn: true,
+    })),
+  ]
+  const canNext = selectedSITIds.size > 0
 
   const addToVisible = (id, sitObj) => {
     setVisibleIds(prev => new Set([...prev, id]))
-    // If it's a built-in (not in allSITs), store the full object
-    const isInLibrary = allSITs.some(s => s.id === id)
-    if (!isInLibrary && sitObj) {
-      setAddedBuiltins(prev => prev.find(s => s.guid === id) ? prev : [...prev, { ...sitObj, id: sitObj.guid, builtIn: true }])
+    const isCustom = allSITs.some(s => s.id === id)
+    if (!isCustom && sitObj) {
+      setAddedBuiltins(prev =>
+        prev.find(s => s.guid === id) ? prev : [...prev, sitObj]
+      )
     }
     if (!selectedSITIds.has(id)) toggleSIT(id)
   }
-
-  // For display — normalise built-in SITs to have same shape as custom
-  const normalisedVisible = visibleSITs.map(s => ({
-    id:       s.id || s.guid,
-    name:     s.name,
-    desc:     s.desc || `Built-in Purview SIT — ${s.conf || 'Medium'} confidence`,
-    tag:      s.tag,
-    builtIn:  !!s.builtIn,
-    isCustom: !!s.isCustom,
-  }))
 
   return (
     <div className={s.step}>
@@ -373,15 +416,15 @@ export default function Step1SITs() {
         <div className={s.eyebrow}>Sensitive Information Types</div>
         <h2>Select SITs to deploy</h2>
         <p>
-          Use <strong>+ Add from library</strong> to choose which SITs to include. Custom SITs
-          are deployed via the XML rule package. Built-in Purview SITs already exist in every
-          tenant and are referenced directly in DLP policy rules — no deployment needed.
+          Use <strong>+ Add from library</strong> to choose SITs. Custom SITs are deployed
+          via the XML rule package. Built-in Purview SITs already exist in every tenant —
+          no deployment script needed for those.
         </p>
       </div>
 
       <div className={s.selectAllRow}>
-        <button className={s.smallBtn} onClick={() => selectAllSITs(true, normalisedVisible)}>Select all</button>
-        <button className={s.smallBtn} onClick={() => selectAllSITs(false, normalisedVisible)}>Clear all</button>
+        <button className={s.smallBtn} onClick={() => selectAllSITs(true,  allVisible)}>Select all</button>
+        <button className={s.smallBtn} onClick={() => selectAllSITs(false, allVisible)}>Clear all</button>
         <span className={s.countLabel}>{selectedSITIds.size} selected</span>
         <button
           className={s.addFromLibraryBtn}
@@ -393,18 +436,16 @@ export default function Step1SITs() {
       </div>
 
       <div className={s.gridTwo}>
-        {normalisedVisible.length === 0 ? (
+        {allVisible.length === 0 ? (
           <div style={{
             gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 1rem',
             color: 'var(--text-m)', fontSize: 14, lineHeight: 1.7,
           }}>
             <div style={{ fontSize: 32, marginBottom: 8 }}>📚</div>
-            <div style={{ fontWeight: 700, color: 'var(--text-s)', marginBottom: 6 }}>
-              No SITs added yet
-            </div>
-            <div>Click <strong style={{ color: 'var(--orange-d)' }}>+ Add from library</strong> above to select SITs for this deployment.</div>
+            <div style={{ fontWeight: 700, color: 'var(--text-s)', marginBottom: 6 }}>No SITs added yet</div>
+            <div>Click <strong style={{ color: 'var(--orange-d)' }}>+ Add from library</strong> to select SITs for this deployment.</div>
           </div>
-        ) : normalisedVisible.map(sit => (
+        ) : allVisible.map(sit => (
           <SITCard
             key={sit.id}
             sit={sit}
