@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:07:21.570Z",
+  "savedAt": "2026-08-11T07:08:37.975Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -210,29 +210,29 @@
       "proximity": 50
     },
     {
-      "id": "custom_ghana_card_nia_pin_msobih5u",
+      "id": "custom_ghana_card_nia_pin_msobk447",
       "name": "Ghana Card / NIA PIN",
-      "desc": "16-digit numeric identifier issued by Ghana's National Identification Authority (NIA). Format: XXXX-XXXX-XXXX-XXXX (displayed with hyphens but stored as 16 continuous digits). Issued by National Identification Authority (NIA). Ghana Card is the national identity card of Ghana. The NIA PIN (Personal Identification Number) is a 16-digit unique identifier assigned to each Ghanaian citizen. This SIT targets the numeric sequence regardless of hyphenation in source documents.",
+      "desc": "10-digit numeric identifier issued by Ghana's National Identification Authority (NIA) as the primary national identification number for Ghanaian citizens. Issued by National Identification Authority (NIA). Ghana Card is the official name of Ghana's national ID card. The NIA PIN is a 10-digit number that serves as the unique identifier on the Ghana Card. This is Ghana's primary identity document and national ID system.",
       "tag": "pii",
       "group": "pii",
       "builtIn": false,
       "isCustom": true,
-      "guid": "52d71357-4bbf-4857-82ad-44ccbee01cbf",
+      "guid": "9f00edcd-0188-4098-a6ba-a3661bb1cd57",
       "conf": "Medium",
-      "regex": "\\b[0-9]{16}\\b",
+      "regex": "\\b\\d{10}\\b",
       "keywords": [
         "Ghana Card",
         "NIA PIN",
         "National Identification Authority",
-        "National Identification Authority Ghana",
         "NIA",
-        "Ghana national ID",
-        "NITA",
-        "Ghana identity number",
-        "Ghana ID number",
-        "National ID Ghana",
-        "Ghana citizen ID",
-        "Ghanaian identification"
+        "Ghana National ID",
+        "National ID Number",
+        "Ghanaian ID",
+        "NIA Number",
+        "ID Number",
+        "Ghana identification",
+        "National Identification Number",
+        "Citizen ID"
       ],
       "proximity": 50
     }
