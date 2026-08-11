@@ -232,19 +232,27 @@ export default function ConfigModal({
 
   function deriveCountry(sit) {
     if (sit.country) return sit.country
-    const n = sit.name || ''
-    const m = n.match(/^(South African?|Nigerian?|Kenyan?|Ghanaian?|UAE|Mauritian?|Zambian?|Seychellois?)\b/i)
-    if (m) {
-      const w = m[1].toLowerCase()
-      if (w.startsWith('south afr')) return 'South Africa'
-      if (w.startsWith('niger'))     return 'Nigeria'
-      if (w.startsWith('kenya'))     return 'Kenya'
-      if (w.startsWith('ghana'))     return 'Ghana'
-      if (w === 'uae')               return 'UAE'
-      if (w.startsWith('maurit'))    return 'Mauritius'
-      if (w.startsWith('zamb'))      return 'Zambia'
-      if (w.startsWith('seychell'))  return 'Seychelles'
-    }
+    const n = (sit.name || '').toLowerCase()
+    if (n.includes('south afr'))  return 'South Africa'
+    if (n.includes('niger'))      return 'Nigeria'
+    if (n.includes('ghana') || n.includes('ghanaian')) return 'Ghana'
+    if (n.includes('uae') || n.includes('united arab')) return 'UAE'
+    if (n.includes('maurit'))     return 'Mauritius'
+    if (n.includes('zambi'))      return 'Zambia'
+    if (n.includes('seychell'))   return 'Seychelles'
+    if (n.includes('kenya') || n.includes('kenyan'))   return 'Kenya'
+    if (n.includes('uganda') || n.includes('ugandan')) return 'Uganda'
+    if (n.includes('tanzani'))    return 'Tanzania'
+    if (n.includes('rwand'))      return 'Rwanda'
+    if (n.includes('ethiopi'))    return 'Ethiopia'
+    if (n.includes('botswana'))   return 'Botswana'
+    if (n.includes('namibia') || n.includes('namibian')) return 'Namibia'
+    if (n.includes('mozambiq'))   return 'Mozambique'
+    if (n.includes('zimbabw'))    return 'Zimbabwe'
+    if (n.includes('uk') || n.includes('united kingdom') || n.includes('british')) return 'United Kingdom'
+    if (n.includes('australian')) return 'Australia'
+    if (n.includes('canadian'))   return 'Canada'
+    if (n.includes('indian') && !n.includes('indiana')) return 'India'
     return 'Other'
   }
 
