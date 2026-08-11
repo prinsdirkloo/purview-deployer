@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useApp } from '../../context/AppContext.jsx'
 import StepNav from '../ui/StepNav.jsx'
 import Modal from '../ui/Modal.jsx'
-import { BtnPrimary, BtnSecondary } from '../ui/Buttons.jsx'
 import s from './Steps.module.css'
 import m from '../modals/Modals.module.css'
+import { BUILTIN_CATALOGUE } from '../../data/builtinCatalogue.js'
+import { SILENT_PURVIEW_SITS } from '../../data/sits.js'
 
+// ── SITCard (main grid) ───────────────────────────────────────────────────────
 const CHECK = (
   <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
     <path d="M1 3.5L3 5.5L8 1" stroke="white" strokeWidth="1.8"
@@ -16,7 +18,7 @@ const CHECK = (
 function SITCard({ sit, selected, onToggle }) {
   const tagLabel = sit.tag === 'pii' ? 'PII' : 'Financial'
   const tagClass = sit.tag === 'pii' ? s.badgePii : s.badgeFin
-  const typeLabel = sit.isCustom ? 'Custom' : 'BUI Custom'
+  const typeLabel = sit.builtIn ? 'Built-in' : sit.isCustom ? 'Custom' : 'BUI Custom'
   return (
     <div
       className={[s.toggleCard, selected && s.selected].filter(Boolean).join(' ')}
@@ -27,7 +29,7 @@ function SITCard({ sit, selected, onToggle }) {
       </div>
       <div className={s.cardInfo}>
         <div className={s.cardName}>{sit.name}</div>
-        <div className={s.cardDesc}>{sit.desc}</div>
+        <div className={s.cardDesc}>{sit.desc || sit.name}</div>
         <div className={s.badges}>
           <span className={[s.badge, tagClass].join(' ')}>{tagLabel}</span>
           <span className={[s.badge, s.badgeBuiltin].join(' ')}>{typeLabel}</span>
@@ -37,184 +39,326 @@ function SITCard({ sit, selected, onToggle }) {
   )
 }
 
-// Library picker — shows all custom SITs not yet added to the main grid
-// ── Country derivation (mirrors ConfigModal logic) ────────────────────────────
+// ── Country derivation ────────────────────────────────────────────────────────
 function deriveCountry(sit) {
   if (sit.country) return sit.country
   const n = (sit.name || '').toLowerCase()
-  if (n.includes('south afr'))  return 'South Africa'
-  if (n.includes('niger'))      return 'Nigeria'
-  if (n.includes('ghana') || n.includes('ghanaian')) return 'Ghana'
-  if (n.includes('uae') || n.includes('united arab')) return 'UAE'
-  if (n.includes('maurit'))     return 'Mauritius'
-  if (n.includes('zambi'))      return 'Zambia'
-  if (n.includes('seychell'))   return 'Seychelles'
-  if (n.includes('kenya') || n.includes('kenyan'))   return 'Kenya'
-  if (n.includes('uganda') || n.includes('ugandan')) return 'Uganda'
-  if (n.includes('tanzani'))    return 'Tanzania'
-  if (n.includes('namibia') || n.includes('namibian')) return 'Namibia'
-  if (n.includes('zimbabw'))    return 'Zimbabwe'
-  if (n.includes('botswana'))   return 'Botswana'
-  if (n.includes('uk') || n.includes('united kingdom') || n.includes('british')) return 'United Kingdom'
-  if (n.includes('australian')) return 'Australia'
-  if (n.includes('canadian'))   return 'Canada'
-  if (n.includes('indian') && !n.includes('indiana')) return 'India'
+  if (n.includes('south afr'))                          return 'South Africa'
+  if (n.includes('niger'))                              return 'Nigeria'
+  if (n.includes('ghana') || n.includes('ghanaian'))    return 'Ghana'
+  if (n.includes('uae') || n.includes('united arab'))   return 'UAE'
+  if (n.includes('maurit'))                             return 'Mauritius'
+  if (n.includes('zambi'))                              return 'Zambia'
+  if (n.includes('seychell'))                           return 'Seychelles'
+  if (n.includes('kenya') || n.includes('kenyan'))      return 'Kenya'
+  if (n.includes('uganda') || n.includes('ugandan'))    return 'Uganda'
+  if (n.includes('tanzani'))                            return 'Tanzania'
+  if (n.includes('namibia') || n.includes('namibian'))  return 'Namibia'
+  if (n.includes('zimbabw'))                            return 'Zimbabwe'
+  if (n.includes('botswana'))                           return 'Botswana'
+  if (n.includes('u.k.') || n.includes('united kingdom') || n.includes('british')) return 'United Kingdom'
+  if (n.includes('u.s.') && !n.includes('u.s. / u.k.')) return 'United States'
+  if (n.includes('u.s. / u.k.'))                        return 'United Kingdom'
+  if (n.includes('australian'))                          return 'Australia'
+  if (n.includes('australia'))                           return 'Australia'
+  if (n.includes('canadian') || n.includes('canada'))   return 'Canada'
+  if (n.includes('indian') && !n.includes('indiana'))   return 'India'
   return 'Other'
 }
 
-// ── Library picker ────────────────────────────────────────────────────────────
-function LibraryPicker({ open, onClose, allLibrarySITs, visibleIds, onAdd }) {
-  const [query,   setQuery]   = useState('')
-  const [groupBy, setGroupBy] = useState('country') // 'country' | 'tag'
-
-  const available = allLibrarySITs.filter(s =>
-    !visibleIds.has(s.id) &&
-    (!query || s.name.toLowerCase().includes(query.toLowerCase()) ||
-               (s.desc || '').toLowerCase().includes(query.toLowerCase()))
-  )
-
-  function buildGroups(sits) {
-    const map = {}
-    sits.forEach(sit => {
-      const key = groupBy === 'country'
-        ? deriveCountry(sit)
-        : (sit.tag === 'pii' ? 'PII (Personal Data)' : 'Financial')
-      if (!map[key]) map[key] = []
-      map[key].push(sit)
-    })
-    const keys = Object.keys(map).sort((a, b) => {
-      if (groupBy === 'country') {
-        if (a === 'South Africa') return -1
-        if (b === 'South Africa') return  1
-        if (a === 'Other')        return  1
-        if (b === 'Other')        return -1
-        return a.localeCompare(b)
-      }
-      if (a === 'PII (Personal Data)') return -1
-      if (b === 'PII (Personal Data)') return  1
-      return a.localeCompare(b)
-    })
-    return { map, keys }
+// For built-in SITs the region field is more meaningful than name-parsing
+function builtinCountryOrRegion(sit) {
+  const rMap = {
+    'ZA':     'South Africa',
+    'Global': 'Global',
+    'EU':     'European Union',
+    'UK':     'United Kingdom',
+    'US':     'United States',
+    'APAC':   'Asia Pacific',
+    'LATAM':  'Latin America',
+    'MEA':    'Middle East & Africa',
+    'Cloud':  'Cloud / Credentials',
   }
+  return rMap[sit.region] || sit.region || 'Other'
+}
 
-  const { map: groups, keys: groupKeys } = buildGroups(available)
+// ── Group builder ─────────────────────────────────────────────────────────────
+function buildGroups(sits, groupBy, isBuiltin) {
+  const map = {}
+  sits.forEach(sit => {
+    let key
+    if (groupBy === 'tag') {
+      key = sit.tag === 'pii' ? 'PII (Personal Data)' : 'Financial'
+    } else {
+      key = isBuiltin ? builtinCountryOrRegion(sit) : deriveCountry(sit)
+    }
+    if (!map[key]) map[key] = []
+    map[key].push(sit)
+  })
+  const PRIORITY = ['South Africa', 'Global', 'PII (Personal Data)']
+  const keys = Object.keys(map).sort((a, b) => {
+    const ai = PRIORITY.indexOf(a), bi = PRIORITY.indexOf(b)
+    if (ai !== -1 && bi !== -1) return ai - bi
+    if (ai !== -1) return -1
+    if (bi !== -1) return  1
+    if (a === 'Other') return  1
+    if (b === 'Other') return -1
+    return a.localeCompare(b)
+  })
+  return { map, keys }
+}
+
+// ── Shared styles for picker rows ─────────────────────────────────────────────
+const TAG_STYLE = (tag) => ({
+  fontSize: 9, fontWeight: 700, padding: '1px 7px', borderRadius: 10,
+  textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
+  background: tag === 'pii' ? 'rgba(99,102,241,0.15)' : 'rgba(217,134,28,0.15)',
+  color:      tag === 'pii' ? '#818cf8' : 'var(--orange-d)',
+})
+
+const GROUP_HEADER_STYLE = {
+  padding: '7px 12px 5px',
+  fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
+  letterSpacing: '0.1em', color: 'var(--orange-d)',
+  borderBottom: '1px solid var(--border)',
+  background: 'var(--bg-s)',
+  position: 'sticky', top: 0, zIndex: 1,
+}
+
+// ── Section component — renders one group of SITs with headers ────────────────
+function PickerSection({ title, sits, groupBy, isBuiltin, visibleIds, addedIds, onAdd, onRemove }) {
+  const [expanded, setExpanded] = useState(true)
+  if (sits.length === 0) return null
+
+  const available   = sits.filter(s => !visibleIds.has(s.id || s.guid))
+  const alreadyAdded = sits.filter(s =>  visibleIds.has(s.id || s.guid))
+  const { map, keys } = buildGroups(available, groupBy, isBuiltin)
+
+  return (
+    <div style={{ marginBottom: 16 }}>
+      {/* Section header */}
+      <div
+        onClick={() => setExpanded(e => !e)}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 14px', cursor: 'pointer',
+          background: 'var(--bg-card)', border: '1px solid var(--border)',
+          borderRadius: expanded ? 'var(--r-md) var(--r-md) 0 0' : 'var(--r-md)',
+          borderBottom: expanded ? 'none' : '1px solid var(--border)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{title}</span>
+          <span style={{
+            fontSize: 11, padding: '1px 8px', borderRadius: 10,
+            background: 'rgba(217,134,28,0.12)', color: 'var(--orange-d)', fontWeight: 600,
+          }}>
+            {available.length} available
+          </span>
+          {alreadyAdded.length > 0 && (
+            <span style={{
+              fontSize: 11, padding: '1px 8px', borderRadius: 10,
+              background: 'rgba(74,222,128,0.12)', color: '#4ade80', fontWeight: 600,
+            }}>
+              {alreadyAdded.length} added
+            </span>
+          )}
+        </div>
+        <span style={{ fontSize: 11, color: 'var(--text-m)' }}>{expanded ? '▲' : '▼'}</span>
+      </div>
+
+      {expanded && (
+        <div style={{
+          border: '1px solid var(--border)', borderTop: 'none',
+          borderRadius: '0 0 var(--r-md) var(--r-md)',
+          overflow: 'hidden',
+        }}>
+          {available.length === 0 && (
+            <div style={{ padding: '1.25rem', textAlign: 'center', color: 'var(--text-m)', fontSize: 13, fontStyle: 'italic' }}>
+              All {title.toLowerCase()} SITs have been added.
+            </div>
+          )}
+          {keys.map(groupKey => (
+            <div key={groupKey}>
+              <div style={GROUP_HEADER_STYLE}>
+                {groupKey}
+                <span style={{ fontWeight: 400, color: 'var(--text-m)', marginLeft: 6, textTransform: 'none', letterSpacing: 0 }}>
+                  ({map[groupKey].length})
+                </span>
+              </div>
+              {map[groupKey].map(sit => {
+                const id = sit.id || sit.guid
+                return (
+                  <div key={id} className={m.pickerItem}>
+                    <div className={m.pickerItemInfo}>
+                      <div className={m.pickerItemName} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                        <span>{sit.name}</span>
+                        <span style={TAG_STYLE(sit.tag)}>{sit.tag === 'pii' ? 'PII' : 'Financial'}</span>
+                        {sit.conf && (
+                          <span style={{ fontSize: 9, color: 'var(--text-m)', fontWeight: 600 }}>
+                            {sit.conf} confidence
+                          </span>
+                        )}
+                      </div>
+                      <div className={m.pickerItemMeta}>
+                        {sit.desc || (isBuiltin ? `Built-in Purview SIT — ${sit.conf || 'Medium'} confidence. Region: ${sit.region || '—'}` : '—')}
+                      </div>
+                    </div>
+                    <button className={m.pickerAddBtn} onClick={() => onAdd(id, sit)}>
+                      + Add
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Main picker modal ─────────────────────────────────────────────────────────
+function LibraryPicker({ open, onClose, customSITs, visibleIds, onAdd }) {
+  const [query,   setQuery]   = useState('')
+  const [groupBy, setGroupBy] = useState('country')
+
+  // Silent built-in SITs that are always auto-included — exclude from picker
+  const silentIds = new Set(SILENT_PURVIEW_SITS.map(s => s.guid))
+
+  // Built-in catalogue — exclude already-silent ones
+  const builtinSITs = BUILTIN_CATALOGUE.filter(s => !silentIds.has(s.guid))
+
+  // Filter both lists by search query
+  const q = query.toLowerCase()
+  const filteredCustom  = q
+    ? customSITs.filter(s => s.name.toLowerCase().includes(q) || (s.desc || '').toLowerCase().includes(q))
+    : customSITs
+  const filteredBuiltin = q
+    ? builtinSITs.filter(s => s.name.toLowerCase().includes(q))
+    : builtinSITs
+
+  const totalAvailable = [...customSITs, ...builtinSITs].filter(s => !visibleIds.has(s.id || s.guid)).length
 
   return (
     <Modal
       open={open}
       onClose={onClose}
       title="Add SITs from library"
-      footer={<button className={m.closeBtn} onClick={onClose}>Done</button>}
+      wide
+      footer={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <span style={{ fontSize: 12, color: 'var(--text-m)' }}>
+            {totalAvailable} SIT{totalAvailable !== 1 ? 's' : ''} available to add
+          </span>
+          <button className={m.closeBtn} onClick={onClose}>Done</button>
+        </div>
+      }
     >
-      <p className={m.pickerDesc}>
-        Select custom SITs to include in this deployment.
-        Manage the library via <strong>⚙ Config</strong>.
-      </p>
-
       {/* Search + group-by toggle */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
         <input
           type="text"
           className={m.pickerSearch}
-          placeholder="Search library…"
+          placeholder="Search all SITs…"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoFocus
           style={{ flex: 1, marginBottom: 0 }}
         />
-        <div style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', overflow: 'hidden', flexShrink: 0 }}>
-          {['country', 'tag'].map(opt => (
+        <div style={{
+          display: 'flex', border: '1px solid var(--border)',
+          borderRadius: 'var(--r-md)', overflow: 'hidden', flexShrink: 0,
+        }}>
+          {[
+            { value: 'country', label: '🌍 Region' },
+            { value: 'tag',     label: '🏷 Tag'    },
+          ].map(opt => (
             <button
-              key={opt}
-              onClick={() => setGroupBy(opt)}
+              key={opt.value}
+              onClick={() => setGroupBy(opt.value)}
               style={{
                 padding: '6px 14px', fontSize: 11, fontWeight: 700,
                 border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                 textTransform: 'uppercase', letterSpacing: '0.06em',
-                background: groupBy === opt ? 'var(--orange)' : 'var(--bg-s)',
-                color: groupBy === opt ? '#fff' : 'var(--text-m)',
+                background: groupBy === opt.value ? 'var(--orange)' : 'var(--bg-s)',
+                color:      groupBy === opt.value ? '#fff'           : 'var(--text-m)',
                 transition: 'all 0.15s',
               }}
             >
-              {opt === 'country' ? '\u{1F30D} Country' : '\u{1F3F7} Tag'}
+              {opt.label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className={m.pickerList}>
-        {available.length === 0 && (
-          <div className={m.pickerEmpty}>
-            {allLibrarySITs.length === visibleIds.size
-              ? 'All library SITs are already on the selection screen.'
-              : 'No matching SITs found.'}
-          </div>
-        )}
+      {/* Explainer */}
+      <p style={{ fontSize: 12, color: 'var(--text-m)', margin: '0 0 14px', lineHeight: 1.6 }}>
+        <strong style={{ color: 'var(--text-s)' }}>Custom SITs</strong> are deployed via the XML rule package and require Script 1 to run first.&nbsp;
+        <strong style={{ color: 'var(--text-s)' }}>Built-in Purview SITs</strong> already exist in every Purview tenant — no deployment needed, they are referenced directly in the DLP policy rules.
+      </p>
 
-        {groupKeys.map(groupKey => (
-          <div key={groupKey}>
-            <div style={{
-              padding: '7px 12px 5px',
-              fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-              letterSpacing: '0.1em', color: 'var(--orange-d)',
-              borderBottom: '1px solid var(--border)',
-              background: 'var(--bg-s)',
-              position: 'sticky', top: 0,
-            }}>
-              {groupKey}
-              <span style={{ fontWeight: 400, color: 'var(--text-m)', marginLeft: 6,
-                textTransform: 'none', letterSpacing: 0 }}>
-                ({groups[groupKey].length})
-              </span>
-            </div>
+      {/* ── Custom SITs section ── */}
+      <PickerSection
+        title="Custom SITs"
+        sits={filteredCustom}
+        groupBy={groupBy}
+        isBuiltin={false}
+        visibleIds={visibleIds}
+        onAdd={onAdd}
+      />
 
-            {groups[groupKey].map(sit => {
-              const tagLabel = sit.tag === 'pii' ? 'PII' : 'Financial'
-              const tagBg    = sit.tag === 'pii' ? 'rgba(99,102,241,0.15)' : 'rgba(217,134,28,0.15)'
-              const tagColor = sit.tag === 'pii' ? '#818cf8' : 'var(--orange-d)'
-              return (
-                <div key={sit.id} className={m.pickerItem}>
-                  <div className={m.pickerItemInfo}>
-                    <div className={m.pickerItemName} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span>{sit.name}</span>
-                      <span style={{
-                        fontSize: 9, fontWeight: 700, padding: '1px 7px',
-                        borderRadius: 10, background: tagBg, color: tagColor,
-                        textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
-                      }}>
-                        {tagLabel}
-                      </span>
-                    </div>
-                    <div className={m.pickerItemMeta}>{sit.desc || '—'}</div>
-                  </div>
-                  <button className={m.pickerAddBtn} onClick={() => onAdd(sit.id)}>
-                    + Add
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-        ))}
-      </div>
+      {/* ── Built-in Purview SITs section ── */}
+      <PickerSection
+        title="Built-in Purview SITs"
+        sits={filteredBuiltin}
+        groupBy={groupBy}
+        isBuiltin={true}
+        visibleIds={visibleIds}
+        onAdd={onAdd}
+      />
+
+      {filteredCustom.length === 0 && filteredBuiltin.length === 0 && (
+        <div className={m.pickerEmpty}>No SITs match your search.</div>
+      )}
     </Modal>
   )
 }
 
+// ── Main Step1 component ──────────────────────────────────────────────────────
 export default function Step1SITs() {
   const { allSITs, selectedSITIds, toggleSIT, selectAllSITs, goTo, currentStep } = useApp()
   const [pickerOpen, setPickerOpen] = useState(false)
-  // Starts empty — user explicitly adds SITs from the library picker
+  // Starts empty — user explicitly adds from the picker
   const [visibleIds, setVisibleIds] = useState(() => new Set())
+  // Extra built-in SITs added via picker (stored as full objects since they're not in allSITs)
+  const [addedBuiltins, setAddedBuiltins] = useState([])
 
-  // Sync visibleIds if allSITs changes (e.g. after config edit)
-  const visibleSITs = allSITs.filter(s => visibleIds.has(s.id))
-  const canNext = selectedSITIds.size > 0
+  // All SITs currently shown on the grid
+  const customVisible  = allSITs.filter(s => visibleIds.has(s.id))
+  const builtinVisible = addedBuiltins.filter(s => visibleIds.has(s.guid))
+  const visibleSITs    = [...customVisible, ...builtinVisible]
+  const canNext        = selectedSITIds.size > 0
 
-  const addToVisible = (id) => {
+  const addToVisible = (id, sitObj) => {
     setVisibleIds(prev => new Set([...prev, id]))
-    // Also auto-select it
+    // If it's a built-in (not in allSITs), store the full object
+    const isInLibrary = allSITs.some(s => s.id === id)
+    if (!isInLibrary && sitObj) {
+      setAddedBuiltins(prev => prev.find(s => s.guid === id) ? prev : [...prev, { ...sitObj, id: sitObj.guid, builtIn: true }])
+    }
     if (!selectedSITIds.has(id)) toggleSIT(id)
   }
+
+  // For display — normalise built-in SITs to have same shape as custom
+  const normalisedVisible = visibleSITs.map(s => ({
+    id:       s.id || s.guid,
+    name:     s.name,
+    desc:     s.desc || `Built-in Purview SIT — ${s.conf || 'Medium'} confidence`,
+    tag:      s.tag,
+    builtIn:  !!s.builtIn,
+    isCustom: !!s.isCustom,
+  }))
 
   return (
     <div className={s.step}>
@@ -229,16 +373,15 @@ export default function Step1SITs() {
         <div className={s.eyebrow}>Sensitive Information Types</div>
         <h2>Select SITs to deploy</h2>
         <p>
-          Select which custom SITs to include in this deployment. Each selected SIT
-          will be included in the XML rule package and wired into the relevant DLP
-          policy rules. Built-in Purview SITs (Credit Card, SA ID, SA Physical
-          Addresses) are automatically included in applicable policies.
+          Use <strong>+ Add from library</strong> to choose which SITs to include. Custom SITs
+          are deployed via the XML rule package. Built-in Purview SITs already exist in every
+          tenant and are referenced directly in DLP policy rules — no deployment needed.
         </p>
       </div>
 
       <div className={s.selectAllRow}>
-        <button className={s.smallBtn} onClick={() => selectAllSITs(true, visibleSITs)}>Select all</button>
-        <button className={s.smallBtn} onClick={() => selectAllSITs(false, visibleSITs)}>Clear all</button>
+        <button className={s.smallBtn} onClick={() => selectAllSITs(true, normalisedVisible)}>Select all</button>
+        <button className={s.smallBtn} onClick={() => selectAllSITs(false, normalisedVisible)}>Clear all</button>
         <span className={s.countLabel}>{selectedSITIds.size} selected</span>
         <button
           className={s.addFromLibraryBtn}
@@ -250,7 +393,7 @@ export default function Step1SITs() {
       </div>
 
       <div className={s.gridTwo}>
-        {visibleSITs.length === 0 ? (
+        {normalisedVisible.length === 0 ? (
           <div style={{
             gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 1rem',
             color: 'var(--text-m)', fontSize: 14, lineHeight: 1.7,
@@ -259,9 +402,9 @@ export default function Step1SITs() {
             <div style={{ fontWeight: 700, color: 'var(--text-s)', marginBottom: 6 }}>
               No SITs added yet
             </div>
-            <div>Click <strong style={{ color: 'var(--orange-d)' }}>+ Add from library</strong> above to select the SITs to include in this deployment.</div>
+            <div>Click <strong style={{ color: 'var(--orange-d)' }}>+ Add from library</strong> above to select SITs for this deployment.</div>
           </div>
-        ) : visibleSITs.map(sit => (
+        ) : normalisedVisible.map(sit => (
           <SITCard
             key={sit.id}
             sit={sit}
@@ -282,7 +425,7 @@ export default function Step1SITs() {
       <LibraryPicker
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        allLibrarySITs={allSITs}
+        customSITs={allSITs}
         visibleIds={visibleIds}
         onAdd={addToVisible}
       />
