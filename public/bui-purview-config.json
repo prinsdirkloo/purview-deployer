@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:40:16.103Z",
+  "savedAt": "2026-08-11T07:49:35.482Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -432,6 +432,33 @@
         "Taxpayer Identification",
         "Federal Tax ID",
         "Emirati Tax Number"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_mauritius_brn_msod0sc9",
+      "name": "Mauritius BRN",
+      "desc": "Two uppercase letters followed by six digits (e.g., AB123456). Issued by Mauritius Revenue Authority (MRA). Mauritius BRN format consists of 2 letters and 6 digits. The two-letter prefix typically represents the registration district or type category. This format is used for business entity registration and taxation purposes.",
+      "tag": "fin",
+      "group": "financial",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "d83e3b4e-d9dc-4251-96da-56c3a4f6faae",
+      "conf": "Medium",
+      "regex": "\\b[A-Z]{2}\\d{6}\\b",
+      "keywords": [
+        "Business Registration Number",
+        "BRN",
+        "Mauritius Revenue Authority",
+        "MRA",
+        "MRA BRN",
+        "Business Registration",
+        "Enterprise Number",
+        "Registration Number",
+        "Mauritius business",
+        "Company registration",
+        "MRA registration",
+        "BRN Mauritius"
       ],
       "proximity": 50
     }
