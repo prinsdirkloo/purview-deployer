@@ -6,6 +6,20 @@
 //         group (pii|financial), tag (pii|fin),
 //         region (ZA|Global|EU|UK|US|APAC|LATAM|MEA|Cloud)
 
+export const REGION_ORDER = ['ZA','Global','EU','UK','US','APAC','LATAM','MEA','Cloud']
+
+export const REGION_LABELS = {
+  ZA:     'South Africa',
+  Global: 'Global',
+  EU:     'European Union',
+  UK:     'United Kingdom',
+  US:     'United States',
+  APAC:   'Asia Pacific',
+  LATAM:  'Latin America',
+  MEA:    'Middle East & Africa',
+  Cloud:  'Cloud / Credentials',
+}
+
 export const BUILTIN_CATALOGUE = [
   // ── South Africa ──
   { name:'South Africa Identification Number', guid:'e2adf7cb-8ea6-4048-a2ed-d89eb65f2780', conf:'High', group:'pii', tag:'pii', region:'ZA' },

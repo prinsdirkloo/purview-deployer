@@ -4,7 +4,7 @@ import StepNav from '../ui/StepNav.jsx'
 import Modal from '../ui/Modal.jsx'
 import s from './Steps.module.css'
 import m from '../modals/Modals.module.css'
-import { BUILTIN_CATALOGUE } from '../../data/builtinCatalogue.js'
+import { BUILTIN_CATALOGUE, REGION_LABELS, REGION_ORDER } from '../../data/builtinCatalogue.js'
 import { SILENT_PURVIEW_SITS } from '../../data/sits.js'
 
 // ── CHECK icon ────────────────────────────────────────────────────────────────
@@ -47,19 +47,6 @@ const TAG_BADGE = (tag) => ({
   background: tag === 'pii' ? 'rgba(99,102,241,0.15)' : 'rgba(217,134,28,0.15)',
   color:      tag === 'pii' ? '#818cf8' : 'var(--orange-d)',
 })
-
-const REGION_LABELS = {
-  ZA:     'South Africa',
-  Global: 'Global',
-  EU:     'European Union',
-  UK:     'United Kingdom',
-  US:     'United States',
-  APAC:   'Asia Pacific',
-  LATAM:  'Latin America',
-  MEA:    'Middle East & Africa',
-  Cloud:  'Cloud / Credentials',
-}
-const REGION_ORDER = ['ZA','Global','EU','UK','US','APAC','LATAM','MEA','Cloud']
 
 // Derive country/region label for custom SITs (no region field)
 function deriveCountry(sit) {
