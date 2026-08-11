@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:12:00.712Z",
+  "savedAt": "2026-08-11T07:13:32.494Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -287,6 +287,34 @@
         "NIC Mauritius",
         "Identification Number",
         "Civil Status Authority"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_zambia_nrc_msobqfd9",
+      "name": "Zambia NRC",
+      "desc": "13-digit Zambian National Registration Card number formatted as 6 digits, 3 digits, 3 digits separated by forward slashes (XXXXXX/XXX/XXX) or in continuous or space-separated format. Issued by Zambia Registration and Licensing Agency (ZRLA). The Zambian NRC is the primary national identification document. Format follows standardized 12-13 digit pattern with typical presentation as XXXXXX/XXX/XXX. Keywords include local issuing authority references and document identification terms specific to Zambia's registration system.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "46322817-d5f1-466f-b697-1bbf2471ca44",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{6}/[0-9]{3}/[0-9]{3}\\b|\\bNRC\\s*[0-9]{6}/[0-9]{3}/[0-9]{3}\\b|\\b[0-9]{6}\\s*[0-9]{3}\\s*[0-9]{3}\\b",
+      "keywords": [
+        "National Registration Card",
+        "NRC",
+        "Zambia NRC",
+        "National ID",
+        "Registration Card Number",
+        "NRC Number",
+        "Zambian identification",
+        "ZARA",
+        "Zambia Registrar",
+        "ID Card",
+        "Passport alternative",
+        "Citizens registration",
+        "ZMB NRC"
       ],
       "proximity": 50
     }
