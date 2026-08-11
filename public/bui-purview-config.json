@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:27:28.184Z",
+  "savedAt": "2026-08-11T07:29:37.478Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -378,6 +378,33 @@
         "Verification Number",
         "11-digit BVN",
         "BVN identifier"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_ghana_gra_tin_msocb3yd",
+      "name": "Ghana GRA TIN",
+      "desc": "11-digit numeric identifier issued by Ghana Revenue Authority for tax identification purposes. Issued by Ghana Revenue Authority (GRA). Ghana GRA TIN consists of 11 digits with no separators or prefix characters. This is the standard format used for individual and corporate taxpayer identification in Ghana.",
+      "tag": "fin",
+      "group": "financial",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "c5e97e5e-f651-4446-b900-032047171b42",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{11}\\b",
+      "keywords": [
+        "Ghana Revenue Authority",
+        "GRA",
+        "Tax Identification Number",
+        "TIN",
+        "Ghanaian TIN",
+        "Ghana tax number",
+        "taxpayer identification",
+        "GRA registration",
+        "tax identification",
+        "revenue authority number",
+        "Ghana taxpayer",
+        "fiscal number"
       ],
       "proximity": 50
     }
