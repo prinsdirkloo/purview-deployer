@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:08:37.975Z",
+  "savedAt": "2026-08-11T07:09:56.004Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -210,29 +210,56 @@
       "proximity": 50
     },
     {
-      "id": "custom_ghana_card_nia_pin_msobk447",
+      "id": "custom_ghana_card_nia_pin_msobih5u",
       "name": "Ghana Card / NIA PIN",
-      "desc": "10-digit numeric identifier issued by Ghana's National Identification Authority (NIA) as the primary national identification number for Ghanaian citizens. Issued by National Identification Authority (NIA). Ghana Card is the official name of Ghana's national ID card. The NIA PIN is a 10-digit number that serves as the unique identifier on the Ghana Card. This is Ghana's primary identity document and national ID system.",
+      "desc": "16-digit numeric identifier issued by Ghana's National Identification Authority (NIA). Format: XXXX-XXXX-XXXX-XXXX (displayed with hyphens but stored as 16 continuous digits). Issued by National Identification Authority (NIA). Ghana Card is the national identity card of Ghana. The NIA PIN (Personal Identification Number) is a 16-digit unique identifier assigned to each Ghanaian citizen. This SIT targets the numeric sequence regardless of hyphenation in source documents.",
       "tag": "pii",
       "group": "pii",
       "builtIn": false,
       "isCustom": true,
-      "guid": "9f00edcd-0188-4098-a6ba-a3661bb1cd57",
+      "guid": "52d71357-4bbf-4857-82ad-44ccbee01cbf",
       "conf": "Medium",
-      "regex": "\\b\\d{10}\\b",
+      "regex": "\\b[0-9]{16}\\b",
       "keywords": [
         "Ghana Card",
         "NIA PIN",
         "National Identification Authority",
+        "National Identification Authority Ghana",
         "NIA",
-        "Ghana National ID",
-        "National ID Number",
-        "Ghanaian ID",
-        "NIA Number",
-        "ID Number",
-        "Ghana identification",
-        "National Identification Number",
-        "Citizen ID"
+        "Ghana national ID",
+        "NITA",
+        "Ghana identity number",
+        "Ghana ID number",
+        "National ID Ghana",
+        "Ghana citizen ID",
+        "Ghanaian identification"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_uae_mobile_number_msoblsbn",
+      "name": "UAE Mobile Number",
+      "desc": "UAE mobile numbers consist of 9-12 digits total. Domestic format: 05X XXXXXXX (where X is 0-9, and the first digit after 0 is 0-9). International format: +971 5X XXXXXXX. Common prefixes are 050, 051, 052, 054, 055, 056, 058 for major providers (Etisalat and du). Issued by Telecommunications Regulatory Authority of the United Arab Emirates (TRA). UAE mobile numbers are regulated by TRA. Two main providers are Etisalat and du. The regex matches both domestic (05X-XXXXXXX) and international (+971-5X-XXXXXXX) formats with common operator prefixes.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "d7d76352-c598-439b-bbd4-2c488fb7e1f1",
+      "conf": "Medium",
+      "regex": "\\b(?:(?:\\+971|00971|0)?(?:50|51|52|54|55|56|58)|971(?:50|51|52|54|55|56|58))\\d{7}\\b",
+      "keywords": [
+        "Emirates Telecommunications Corporation",
+        "Etisalat",
+        "du",
+        "Telecommunications Regulatory Authority",
+        "TRA",
+        "UAE Mobile Number",
+        "Mobile Number",
+        "Phone Number",
+        "Contact Number",
+        "Cellular Number",
+        "Cell Phone",
+        "Mobile"
       ],
       "proximity": 50
     }
