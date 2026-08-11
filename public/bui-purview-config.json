@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "savedAt": "2026-04-29T00:00:00.000Z",
-  "description": "BUI Purview Deployment Script Generator \u2014 Custom SIT Library. This file is the source of truth for your custom SIT library. Commit changes here to persist them across all browsers and devices. Three built-in Purview SITs (Credit Card, SA ID, SA Physical Addresses) are automatically included in DLP policies and are NOT stored here.",
+  "savedAt": "2026-08-11T07:15:15.761Z",
+  "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
       "id": "sa_company_reg",
@@ -9,7 +9,6 @@
       "desc": "CIPC format YYYY/XXXXXXX/XX near company keywords",
       "tag": "pii",
       "builtIn": false,
-      "isCustom": false,
       "guid": "5779832b-b170-494f-b18d-05dc50f078b0",
       "conf": "Medium",
       "group": "financial",
@@ -23,7 +22,11 @@
         "Business Registration Number"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_mobile",
@@ -31,7 +34,6 @@
       "desc": "+27/27/0 prefix with valid SA carrier ranges",
       "tag": "pii",
       "builtIn": false,
-      "isCustom": false,
       "guid": "537c36cf-a3a9-4719-a4cd-183894bea0d9",
       "conf": "Medium",
       "group": "pii",
@@ -46,15 +48,18 @@
         "phone number"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_bank",
       "name": "South African Bank Account Number",
-      "desc": "10\u201312 digits near SA bank name + account type keywords",
+      "desc": "10–12 digits near SA bank name + account type keywords",
       "tag": "fin",
       "builtIn": false,
-      "isCustom": false,
       "guid": "a6b97e82-7f65-4c7e-82f6-7c850e815386",
       "conf": "Medium",
       "group": "financial",
@@ -70,7 +75,11 @@
         "branch code"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_company_tax",
@@ -78,7 +87,6 @@
       "desc": "SARS company tax ref starting with 9 (10 digits)",
       "tag": "fin",
       "builtIn": false,
-      "isCustom": false,
       "guid": "bd938c71-5bed-4156-91ec-a8cb68fd1525",
       "conf": "Medium",
       "group": "financial",
@@ -91,7 +99,11 @@
         "SARS Tax Reference Number"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_dob",
@@ -99,7 +111,6 @@
       "desc": "Date formats near DOB keywords (use min 2 to reduce FPs)",
       "tag": "pii",
       "builtIn": false,
-      "isCustom": false,
       "guid": "07dee987-6d0f-4fdb-ab08-cff8bfbc31d8",
       "conf": "Medium",
       "group": "pii",
@@ -112,7 +123,11 @@
         "yob"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_paye",
@@ -120,7 +135,6 @@
       "desc": "SARS PAYE registration starting with 7 (10 digits)",
       "tag": "fin",
       "builtIn": false,
-      "isCustom": false,
       "guid": "5f320260-18be-4c32-bfb0-261362f1b792",
       "conf": "Medium",
       "group": "financial",
@@ -132,7 +146,11 @@
         "Pay as you Earn Number"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_personal_tax",
@@ -140,7 +158,6 @@
       "desc": "SARS personal tax ref format NNNN/NNNNNNN/NN",
       "tag": "fin",
       "builtIn": false,
-      "isCustom": false,
       "guid": "6a3a63d6-a69f-4189-8648-ae4c451f08b7",
       "conf": "Medium",
       "group": "pii",
@@ -151,7 +168,11 @@
         "Taxpayer Number"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_uif",
@@ -159,7 +180,6 @@
       "desc": "Unemployment Insurance Fund ref NNNNNN/N",
       "tag": "fin",
       "builtIn": false,
-      "isCustom": false,
       "guid": "e11a1e65-2ef2-4698-b360-6f9ebfc9823f",
       "conf": "Medium",
       "group": "financial",
@@ -170,7 +190,11 @@
         "Unemployment Insurance Fund"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_vat",
@@ -178,7 +202,6 @@
       "desc": "SARS VAT registration starting with 4 (10 digits)",
       "tag": "fin",
       "builtIn": false,
-      "isCustom": false,
       "guid": "44604fab-4b4c-4e7a-a301-5888163eb630",
       "conf": "Medium",
       "group": "financial",
@@ -189,7 +212,174 @@
         "Value Added Tax"
       ],
       "proximity": 50,
+<<<<<<< HEAD
       "country": "South Africa"
+=======
+      "isCustom": false
+    },
+    {
+      "id": "custom_nigerian_nin_msobgkjh",
+      "name": "Nigerian NIN",
+      "desc": "11-digit numeric identifier issued by the Federal Inland Revenue Service of Nigeria. Issued by Federal Inland Revenue Service (FIRS). Nigerian NIN consists of exactly 11 digits with no separators, prefixes, or special characters. Issued by FIRS for tax and identification purposes.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "c9b06d2b-8d50-4e12-835b-b64013757b7d",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{11}\\b",
+      "keywords": [
+        "National Identification Number",
+        "NIN",
+        "Federal Inland Revenue Service",
+        "FIRS",
+        "Nigerian National Identification Number",
+        "National ID",
+        "NIN number",
+        "identification number",
+        "FIRS NIN",
+        "tax identification",
+        "Nigeria NIN",
+        "unique identification"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_ghana_card_nia_pin_msobih5u",
+      "name": "Ghana Card / NIA PIN",
+      "desc": "16-digit numeric identifier issued by Ghana's National Identification Authority (NIA). Format: XXXX-XXXX-XXXX-XXXX (displayed with hyphens but stored as 16 continuous digits). Issued by National Identification Authority (NIA). Ghana Card is the national identity card of Ghana. The NIA PIN (Personal Identification Number) is a 16-digit unique identifier assigned to each Ghanaian citizen. This SIT targets the numeric sequence regardless of hyphenation in source documents.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "52d71357-4bbf-4857-82ad-44ccbee01cbf",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{16}\\b",
+      "keywords": [
+        "Ghana Card",
+        "NIA PIN",
+        "National Identification Authority",
+        "National Identification Authority Ghana",
+        "NIA",
+        "Ghana national ID",
+        "NITA",
+        "Ghana identity number",
+        "Ghana ID number",
+        "National ID Ghana",
+        "Ghana citizen ID",
+        "Ghanaian identification"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_uae_mobile_number_msoblsbn",
+      "name": "UAE Mobile Number",
+      "desc": "UAE mobile numbers consist of 9-12 digits total. Domestic format: 05X XXXXXXX (where X is 0-9, and the first digit after 0 is 0-9). International format: +971 5X XXXXXXX. Common prefixes are 050, 051, 052, 054, 055, 056, 058 for major providers (Etisalat and du). Issued by Telecommunications Regulatory Authority of the United Arab Emirates (TRA). UAE mobile numbers are regulated by TRA. Two main providers are Etisalat and du. The regex matches both domestic (05X-XXXXXXX) and international (+971-5X-XXXXXXX) formats with common operator prefixes.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "d7d76352-c598-439b-bbd4-2c488fb7e1f1",
+      "conf": "Medium",
+      "regex": "\\b(?:(?:\\+971|00971|0)?(?:50|51|52|54|55|56|58)|971(?:50|51|52|54|55|56|58))\\d{7}\\b",
+      "keywords": [
+        "Emirates Telecommunications Corporation",
+        "Etisalat",
+        "du",
+        "Telecommunications Regulatory Authority",
+        "TRA",
+        "UAE Mobile Number",
+        "Mobile Number",
+        "Phone Number",
+        "Contact Number",
+        "Cellular Number",
+        "Cell Phone",
+        "Mobile"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_mauritius_nic_msobogjr",
+      "name": "Mauritius NIC",
+      "desc": "Mauritius NIC format: 1 letter + 6 digits + 1 letter (e.g., A123456B). The first letter typically represents the gender and year of birth, followed by a 6-digit number, and ending with a checksum letter. Issued by Ministry of Civil Status and Nationality (NIC). Mauritius NIC is the primary national identity document. Format consists of 8 characters total: letter-digit-digit-digit-digit-digit-digit-letter. Used for civil registration and identification purposes by the Ministry of Civil Status and Nationality.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "8e4649ff-a358-4910-b2ef-6e6107355650",
+      "conf": "Medium",
+      "regex": "\\b[A-Z]{1}\\d{6}[A-Z]{1}\\b",
+      "keywords": [
+        "National Identity Card",
+        "NIC",
+        "Mauritius",
+        "National Identity Card Number",
+        "Carte d'Identité Nationale",
+        "CIN",
+        "Ministry of Civil Status",
+        "Identity Number",
+        "Mauritian ID",
+        "NIC Mauritius",
+        "Identification Number",
+        "Civil Status Authority"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_zambia_nrc_msobqfd9",
+      "name": "Zambia NRC",
+      "desc": "13-digit Zambian National Registration Card number formatted as 6 digits, 3 digits, 3 digits separated by forward slashes (XXXXXX/XXX/XXX) or in continuous or space-separated format. Issued by Zambia Registration and Licensing Agency (ZRLA). The Zambian NRC is the primary national identification document. Format follows standardized 12-13 digit pattern with typical presentation as XXXXXX/XXX/XXX. Keywords include local issuing authority references and document identification terms specific to Zambia's registration system.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "46322817-d5f1-466f-b697-1bbf2471ca44",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{6}/[0-9]{3}/[0-9]{3}\\b|\\bNRC\\s*[0-9]{6}/[0-9]{3}/[0-9]{3}\\b|\\b[0-9]{6}\\s*[0-9]{3}\\s*[0-9]{3}\\b",
+      "keywords": [
+        "National Registration Card",
+        "NRC",
+        "Zambia NRC",
+        "National ID",
+        "Registration Card Number",
+        "NRC Number",
+        "Zambian identification",
+        "ZARA",
+        "Zambia Registrar",
+        "ID Card",
+        "Passport alternative",
+        "Citizens registration",
+        "ZMB NRC"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_seychelles_national_id_msobsn1t",
+      "name": "Seychelles National ID",
+      "desc": "6 digits followed by 2 letters followed by 3 digits (e.g., 123456AB789). Issued by Seychelles Civil Status Division (CSD). Seychelles National Identity Card (Carte d'Identité Nationale) format consists of 6 numerical digits, followed by 2 alphabetical letters representing the island of issue, followed by 3 numerical digits. The two-letter code indicates which island the card was issued from (e.g., MA=Mahé, PA=Praslin, LA=La Digue). The Civil Status Division is the government authority responsible for issuing and managing national identification documents in Seychelles.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "93805093-b8f7-4afa-8d85-e27f7c47e487",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{6}[A-Z]{2}[0-9]{3}\\b",
+      "keywords": [
+        "Seychelles National Identity Card",
+        "National Identity Card",
+        "Seychelles National ID",
+        "Identity Card",
+        "Carte d'Identité Nationale",
+        "National Identification Number",
+        "Seychelles ID Number",
+        "Identity Number",
+        "ID Card Number",
+        "National ID Seychelles",
+        "Seychelles Identification",
+        "Identification Number"
+      ],
+      "proximity": 50
+>>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     }
   ]
 }
