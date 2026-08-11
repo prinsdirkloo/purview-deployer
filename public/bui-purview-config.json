@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:15:15.761Z",
+  "savedAt": "2026-08-11T07:27:28.184Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
       "id": "sa_company_reg",
+      "country": "South Africa",
       "name": "South African Company Registration Number",
       "desc": "CIPC format YYYY/XXXXXXX/XX near company keywords",
       "tag": "pii",
@@ -22,14 +23,11 @@
         "Business Registration Number"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_mobile",
+      "country": "South Africa",
       "name": "South African Mobile Number",
       "desc": "+27/27/0 prefix with valid SA carrier ranges",
       "tag": "pii",
@@ -48,14 +46,11 @@
         "phone number"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_bank",
+      "country": "South Africa",
       "name": "South African Bank Account Number",
       "desc": "10–12 digits near SA bank name + account type keywords",
       "tag": "fin",
@@ -75,14 +70,11 @@
         "branch code"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_company_tax",
+      "country": "South Africa",
       "name": "South African Company Income Tax Number",
       "desc": "SARS company tax ref starting with 9 (10 digits)",
       "tag": "fin",
@@ -99,14 +91,11 @@
         "SARS Tax Reference Number"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_dob",
+      "country": "South Africa",
       "name": "South African Date of Birth",
       "desc": "Date formats near DOB keywords (use min 2 to reduce FPs)",
       "tag": "pii",
@@ -123,14 +112,11 @@
         "yob"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_paye",
+      "country": "South Africa",
       "name": "South African PAYE Number",
       "desc": "SARS PAYE registration starting with 7 (10 digits)",
       "tag": "fin",
@@ -146,14 +132,11 @@
         "Pay as you Earn Number"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_personal_tax",
+      "country": "South Africa",
       "name": "South African Personal Income Tax Number",
       "desc": "SARS personal tax ref format NNNN/NNNNNNN/NN",
       "tag": "fin",
@@ -168,14 +151,11 @@
         "Taxpayer Number"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_uif",
+      "country": "South Africa",
       "name": "South African UIF Number",
       "desc": "Unemployment Insurance Fund ref NNNNNN/N",
       "tag": "fin",
@@ -190,14 +170,11 @@
         "Unemployment Insurance Fund"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
     },
     {
       "id": "sa_vat",
+      "country": "South Africa",
       "name": "South African VAT Number",
       "desc": "SARS VAT registration starting with 4 (10 digits)",
       "tag": "fin",
@@ -212,9 +189,6 @@
         "Value Added Tax"
       ],
       "proximity": 50,
-<<<<<<< HEAD
-      "country": "South Africa"
-=======
       "isCustom": false
     },
     {
@@ -379,7 +353,33 @@
         "Identification Number"
       ],
       "proximity": 50
->>>>>>> f63738e419bb91f3aaea91748a2206f919fe555f
+    },
+    {
+      "id": "custom_nigerian_bvn_msoc8c6v",
+      "name": "Nigerian BVN",
+      "desc": "11-digit numeric identifier issued by Central Bank of Nigeria through NIBSS for bank account verification and financial transaction purposes. Issued by Central Bank of Nigeria (CBN). BVN is mandatory for all bank account holders in Nigeria. Format is strictly 11 consecutive digits with no separators, prefixes, or alphabetic characters. Issued and managed by CBN through NIBSS (Nigeria Inter-Bank Settlement System).",
+      "tag": "fin",
+      "group": "financial",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "53b5d234-a51e-4250-aaae-b92553a28fb7",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{11}\\b",
+      "keywords": [
+        "Bank Verification Number",
+        "BVN",
+        "Nigerian BVN",
+        "Central Bank of Nigeria",
+        "CBN",
+        "NIBSS",
+        "Nigeria Inter-Bank Settlement System",
+        "BVN Registration",
+        "BVN Number",
+        "Verification Number",
+        "11-digit BVN",
+        "BVN identifier"
+      ],
+      "proximity": 50
     }
   ]
 }
