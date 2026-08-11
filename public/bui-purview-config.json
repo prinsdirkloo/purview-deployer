@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-08-11T07:13:32.494Z",
+  "savedAt": "2026-08-11T07:15:15.761Z",
   "description": "BUI Purview Deployment Script Generator — Custom SIT Library.",
   "sits": [
     {
@@ -315,6 +315,33 @@
         "Passport alternative",
         "Citizens registration",
         "ZMB NRC"
+      ],
+      "proximity": 50
+    },
+    {
+      "id": "custom_seychelles_national_id_msobsn1t",
+      "name": "Seychelles National ID",
+      "desc": "6 digits followed by 2 letters followed by 3 digits (e.g., 123456AB789). Issued by Seychelles Civil Status Division (CSD). Seychelles National Identity Card (Carte d'Identité Nationale) format consists of 6 numerical digits, followed by 2 alphabetical letters representing the island of issue, followed by 3 numerical digits. The two-letter code indicates which island the card was issued from (e.g., MA=Mahé, PA=Praslin, LA=La Digue). The Civil Status Division is the government authority responsible for issuing and managing national identification documents in Seychelles.",
+      "tag": "pii",
+      "group": "pii",
+      "builtIn": false,
+      "isCustom": true,
+      "guid": "93805093-b8f7-4afa-8d85-e27f7c47e487",
+      "conf": "Medium",
+      "regex": "\\b[0-9]{6}[A-Z]{2}[0-9]{3}\\b",
+      "keywords": [
+        "Seychelles National Identity Card",
+        "National Identity Card",
+        "Seychelles National ID",
+        "Identity Card",
+        "Carte d'Identité Nationale",
+        "National Identification Number",
+        "Seychelles ID Number",
+        "Identity Number",
+        "ID Card Number",
+        "National ID Seychelles",
+        "Seychelles Identification",
+        "Identification Number"
       ],
       "proximity": 50
     }
